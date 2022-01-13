@@ -1,0 +1,25 @@
+.card {
+  &-container {
+    margin: auto;
+    width: 20vw;
+    background: var(--color-base-500);
+    border: 1px solid var(--color-accent-500);
+    border-radius: .7rem;
+    padding: 2vh 2vw; gap: 2vh;
+    color: white;
+
+    display: grid;
+    grid-template-rows: auto 1fr min-content;
+
+    img {
+      width: 100%;
+      filter: drop-shadow(0px 0px 10px rgba(0,0,0, .25));
+      border-radius: .7rem;
+    }
+
+    p {
+      margin: 0; margin-bottom: 5vh;
+    }
+
+  }
+}

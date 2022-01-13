@@ -1,0 +1,27 @@
+:root {
+  --color-accent-500: hsl(45, 95%, 50%);
+  --color-base-500: hsl(30, 20%, 10%); 
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI';
+  font-weight: 600;
+
+  &::-webkit-scrollbar {
+    background-color: var(--color-base-500);
+    width: .5vw;
+    &-thumb {
+      background-color: var(--color-accent-500);
+      border: 2px solid var(--color-base-500);;
+      border-radius: 15px;
+    }
+  }
+
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
