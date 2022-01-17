@@ -15,8 +15,12 @@ import { html } from 'lit-html';
     buttonTitle: string
   }
 
+  interface Props {
+    title: string
+  }
+
 // MODULE
-export default class Header extends Component<HeaderState, unknown> {
+export default class Header extends Component<HeaderState, Props> {
 
   static NAVIGATION_LINKS: Array<HeaderLink> = [
     { link: './', title: 'Home' },
@@ -25,9 +29,9 @@ export default class Header extends Component<HeaderState, unknown> {
     { link: './', title: 'Abouts Us' },
   ];
 
-  constructor(updateRootMethod: ComponentHooks['onUpdate']) { 
+  constructor(updateRootMethod: ComponentHooks['onUpdate'], props: Props) { 
 
-    super({ buttonTitle: 'Work with us!' }, {
+    super({ buttonTitle: props.title || 'Work with us!' }, {
       onUpdate: updateRootMethod
     });
 

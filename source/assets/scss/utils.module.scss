@@ -1,0 +1,17 @@
+.commonButton {
+
+	cursor: pointer;
+
+	background-color: transparent;
+	color: var(--color-accent-500);
+	border: 1px solid var(--color-accent-500);
+	border-radius: .7rem;
+
+	width: 100%;
+
+	padding: 2vh 2vw;
+	font-weight: 700;
+
+	// width: max-content;
+
+}

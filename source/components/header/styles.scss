@@ -36,6 +36,8 @@
     padding: 2vh 3vw;
     font-weight: 700;
 
+    width: max-content;
+
     transition-duration: 250ms;
     &:hover {
       background-color: transparent;
