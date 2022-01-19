@@ -1,7 +1,7 @@
 import { html, TemplateResult } from 'lit-html';
 
 // COMPONENT
-  import Component, { UpdateMethod } from '~/component';
+  import Component, { ComponentPayload } from '~/component';
 
 // STYLES
   import './styles.scss'
@@ -13,7 +13,10 @@ import { html, TemplateResult } from 'lit-html';
 
   export interface State {
     title: string
-    image: string
+    image: {
+      full: string,
+      preview: string,
+    }
   }
 
   export interface Props extends Partial<State> {
@@ -21,39 +24,40 @@ import { html, TemplateResult } from 'lit-html';
   }
 
 // MODULE
-  export default class CardComponent extends Component<State, Props> {
+  export default class Card extends Component<State, Props,any> {
+
+    public renderFunction = this.render;
     
-    constructor(updateMethod: UpdateMethod, props?: Props) {
+    constructor({ props, hooks }: ComponentPayload<State, Props>) {
 
-      const state: State = {
+      super({ props, hooks, state: {
         title: props?.title || 'Default title',
-        image: props?.image || placeholderImage
-      }
-
-      super(state, { onUpdate: updateMethod });
+        image: props?.image || {
+          full: placeholderImage,
+          preview: placeholderImage,
+        }
+      }});
 
     }
 
     setMainImage() {
-      this.globalStore.setKey('mainImage', this.state.get().image);
+      this.globalStore.setKey('mainImage', this.state.get().image.full);
     }
 
-    render(): TemplateResult<1> {
+    render() {
 
       const { title, image } = this.state.get();
 
       return html`
-        <div class="card-container" @click=${ () => this.setMainImage() }>
-          <header>${ title }</header>
-          <hr>
-          <picture>
-            <img src="${ image || placeholderImage }">
+        <div class="card-container" id="${ this.constructor.name }-${ this.hash }" @click=${ () => this.setMainImage() }>
+          <header class="card-header">${ title }</header>
+          <picture class="card-picture">
+            <img src="${ image.preview || placeholderImage }">
           </picture>
-          <hr>
-          <p>
+          <article class="card-body">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
             Accusamus a harum beatae ad perferendis, quo excepturi rem, vitae voluptas incidunt fugit debitis sit quae eligendi facere reiciendis at fuga unde.
-          </p>
+          </article>
         </div>
       `
       

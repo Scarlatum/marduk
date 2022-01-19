@@ -4,6 +4,7 @@
     height: 100vh;
 
     display: grid;
+    position: relative;
     grid-template: {
       rows: 10vh 80vh 10vh;
       columns: 1fr 1fr;
@@ -37,7 +38,7 @@
       height: 100%;
       object-fit: cover;
       transform: translate(var(--x),var(--y)) scale(1.15);
-      transition-duration: 1000ms;
+      transition-duration: 2000ms;
       transition-timing-function: ease-out;
       opacity: .5;
     }
@@ -98,6 +99,7 @@
 
     span {
       color: white;
+      font-size: var(--font-size-normal);
     }
   }
 }

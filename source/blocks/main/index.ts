@@ -1,75 +1,145 @@
-import { html, TemplateResult } from 'lit-html';
+import { html } from 'lit-html';
+import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 
 // COMPONENT CLASS
-  import EccheumaComponent, { ComponentHooks } from '~/component'
+  import EccheumaComponent, { ComponentPayload } from '~/component'
 
 // STYLES
   import './styles.scss';
-  import commonUtilStyles from '~/assets/scss/utils.module.scss'
 
 // COMPONENTS
-  import Header from '~/components/header';
-  import Card, { State as CardState, Props as CardProps } from '~/components/card'
 
-  console.log(Card.name, Header.name);
+  type ComponentsKeys = "Header" | `Card-${ number }` | 'FeedButton';
+
+  import Header from '~/components/header';
+  import Button from '~/components/button';
+  import Card, { State as CardState, Props as CardProps } from '~/components/card';
 
 // IMAGE
-  import imagePath  from '~/assets/images/back.jpg';
-  import frontImage from '~/assets/images/front.jpg';
-  import shipImage  from '~/assets/images/ship.png';
+
+  // @ts-ignore
+  import imagePath  from '~/assets/images/back.jpg?w=1440;300&format=webp';
+  // @ts-ignore
+  import frontImage from '~/assets/images/front.jpg?w=1440;300&format=webp';
+  // @ts-ignore
+  import shipImage  from '~/assets/images/ship.png?w=1440;300&format=webp';
+  // @ts-ignore
+  import mechImage  from `~/assets/images/mech.png?w=1440;300&format=webp`;
+  // @ts-ignore
+  import akImage    from `~/assets/images/ak.jpg?w=1440;300&format=webp`;
+  // @ts-ignore
+  import ak12Image  from `~/assets/images/ak12.jpg?w=1440;300&format=webp`;
+
+// CARD DATA 
+  const CARD_DATA: Array<CardProps> = [
+    {
+      title: 'Test title FOR GOD OF MACHINE',
+      image: {
+        full: ak12Image[0],
+        preview: ak12Image[1]
+      }
+    },
+    {
+      title: 'Test title for me',
+      image: {
+        full: frontImage[0],
+        preview: frontImage[1]
+      }
+    },
+    {
+      title: 'Test title for feed',
+      image: {
+        full: shipImage[0],
+        preview: shipImage[1]
+      }
+    }
+  ]
 
 // INTERFACES'N'TYPES
 
   type ImageTransform = { x: number, y: number };
   type MaskParams     = { e: number, s: number };
 
-  export interface ComponentState {
+  export interface State {
     imageShift: ImageTransform
     maskParams: MaskParams
     image: string,
-    cards: Array<EccheumaComponent<CardState,CardProps>>
+    cards: Array<EccheumaComponent<CardState,CardProps,any>>
   }
 
-  export interface ComponentProps {
+  export interface Props {
 
   }
 
 // MODULE
-  export default class MainBlockComponent extends EccheumaComponent<ComponentState, ComponentProps> {
+  export default class MainBlockComponent extends EccheumaComponent<State, Props, ComponentsKeys> {
 
-    private static STATE: ComponentState = { 
+    private static staticState: State = { 
       imageShift: { x: 0, y: 0 }, 
       maskParams: { e: 0, s: 0 }, 
-      image: shipImage,
+      image: shipImage[0],
       cards: new Array(),
     }
 
-    constructor(updateRoot: ComponentHooks['onUpdate']) { 
+    private ImageAnimation?: Animation;
 
-      super(MainBlockComponent.STATE,{
-        onMount: () => {
-          this.animateAbout();
-        },
-        onUpdate: updateRoot
+    public textRef: Ref<HTMLElement> = createRef();
+
+    public renderFunction = this.render;
+
+    constructor({ hooks, props }: ComponentPayload<State, Props>) { 
+
+      super({ hooks, props, state: { 
+        ...MainBlockComponent.staticState
+      }});
+
+      // Set State
+      this.state.setKey('cards', CARD_DATA.map((data, i) => this.registerComponent(`Card-${i}`, Card, data)!));
+
+      // Component registration 
+      this.registerComponent('Header', Header, { 
+        title: 'Funny Title' 
       });
 
-      this.globalStore.listen((value, key) => {
-        switch (key) {
-          case 'mainImage': this.state.setKey('image', value.mainImage)
+      this.registerComponent('FeedButton', Button, { 
+        title: 'FeedButton',
+        onClick: () => {
+          this.pushNewCard(this.state.get())
         }
-      })      
+      });
 
-      this.registerComponent('HeaderComponent', Header, { title: 'Funny Title' });
+      // ----------
+      this.mounthed.listen(() => this.onMounth());
 
-      this.state.get().cards = [
-        this.registerComponent('Card-0', Card, { title: 'Shiiiiiip',        image: shipImage })!,
-        this.registerComponent('Card-1', Card, { title: 'Maid title',       image: imagePath })!,
-        this.registerComponent('Card-2', Card, { title: 'Autism is a cure', image: frontImage})!,
-      ]
+    }
 
+    private onMounth() {
+
+      // ---------- 
       window.addEventListener('mousemove', ({ x, y }) => {
         this.state.setKey('imageShift', MainBlockComponent.getNormilizedShift({x,y}, -15))
       })
+
+      const image = document.getElementById('mainImage') as HTMLImageElement;
+
+      this.animateAbout(this.textRef.value);
+
+      this.ImageAnimation = image.animate([
+        { opacity: 0.5 },
+        { opacity: 0.0 },
+      ], {
+        fill: 'both',
+        duration: 250,
+      })
+
+      this.ImageAnimation.pause(); 
+
+      // Global state listener
+      this.globalStore.listen((value, key) => {
+        switch (key) {
+          case 'mainImage': this.changeImage(value[key], image)
+        }
+      }) 
 
     }
 
@@ -78,15 +148,33 @@ import { html, TemplateResult } from 'lit-html';
     }
 
     private static getNormilizedShift(values: ImageTransform, maxShift: number): ImageTransform {
+
       return {
         x: maxShift * ( MainBlockComponent.easeOutQuad(values.x / (innerWidth  / 2) - 1)),
         y: maxShift * ( MainBlockComponent.easeOutQuad(values.y / (innerHeight / 2) - 1)),
       }
+
     }
 
-    private animateAbout() {
-      
-      const element = document.getElementById('MainDescription');
+    private changeImage(imagePath: string, image: HTMLImageElement) {
+
+      const anim = this.ImageAnimation!; 
+
+      anim.playbackRate = 1;
+      anim.play();
+      anim.onfinish = () => { 
+
+        image.onload = () => anim.reverse(); 
+
+        anim.onfinish = null;
+
+        this.state.setKey('image', imagePath); 
+
+      }
+
+    }
+
+    private animateAbout(element?: HTMLElement) {
 
       if ( element ) {
         Array.from(element.children).forEach((el, i) => {
@@ -104,14 +192,17 @@ import { html, TemplateResult } from 'lit-html';
 
     }
 
-    private calcFadeMask({ target }: WheelEvent) {
-      // const { scrollHeight, offsetHeight, scrollTop } = target as HTMLElement;
-      // this.state.setKey('maskParams', { e: 0, s: 0 });
-    }
+    private pushNewCard(state: State) {
 
-    private pushNewCard(state: ComponentState) {
+      const data: CardState = { 
+        title: 'Autism is a cure', 
+        image: {
+          full: akImage[0],
+          preview: akImage[1],
+        }
+      }
 
-      const card = this.registerComponent(`Card-${ state.cards.length + 1 }`, Card, { title: 'Autism is a cure', image: frontImage})!
+      const card = this.registerComponent(`Card-${ state.cards.length + 1 }`, Card, data)!
 
       if ( card ) {
         this.state.setKey('cards', [ ...state.cards, card ])
@@ -119,7 +210,9 @@ import { html, TemplateResult } from 'lit-html';
 
     }
 
-    render(): TemplateResult<1> {
+    
+
+    render() {
 
       const state = this.state.get();
 
@@ -127,26 +220,23 @@ import { html, TemplateResult } from 'lit-html';
       const { s, e } = state.maskParams;
 
       return html`
-        <section class="main-container">
-          ${ this.components.get('HeaderComponent')?.render() }
+        <section class="main-container" id="${ this.constructor.name }-${ this.hash }">
+          ${ this.components.get('Header')?.render() }
           <picture class="main-image">
-            <img src="${ state.image }" style="--x: ${ x.toFixed(3) }px; --y: ${ y.toFixed(3) }px;">
+            <img src="${ state.image }" style="--x: ${ x.toFixed(3) }px; --y: ${ y.toFixed(3) }px;" id="mainImage">
           </picture>
-          <div id="MainDescription" class="main-about">
+          <div class="main-about" ${ ref(this.textRef) }>
             <h1>Anime girls as point of life</h1>
             <h5>Reputiamo ammirabile sempre viviamo oportune giudice i udita sua seguitando forse, nostro 'l cosa fosse medesimi dio seguitando della del, nel in cospetto lui oppinione e che, eterni etterno apparire giudice dallo durare apparire vostro alcun vita, transitorie pregator di.</h5>
           </div>
           <div id="CardContainer" 
             class="main-preview" 
-            style="--e: ${ e }; --s: ${ s }" 
-            @wheel="${ (event: WheelEvent) => this.calcFadeMask(event) }"
+            style="--e: ${ e }; --s: ${ s }"
             >
 
             ${ state.cards.map((card) => card.render()) }
 
-            <button class="${ commonUtilStyles.commonButton }" @click="${ () => this.pushNewCard(state) }">
-              Добавить ещё
-            </button>
+            ${ this.components.get('FeedButton')?.render() };
 
           </div>
           <div class="main-footer">

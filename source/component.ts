@@ -1,13 +1,12 @@
-
-import { html, nothing, TemplateResult } from 'lit-html';
-import { atom, map as nanostoresMap, MapStore } from 'nanostores';
-
-// STORE
-  import { globalStore } from '~/store'
+import type { TemplateResult } from 'lit-html';
+import { atom, map as nanostoresMap } from 'nanostores';
 
 // TYPES
+  import type { MapStore, Atom  } from 'nanostores';
+
   export type RenderFunction = () => TemplateResult<1>;
-  export type UpdateMethod = () => Promise<void>;
+  export type UpdateMethod   = () => Promise<void>;
+  export type NotifyMethod   = () => void;
 
   export type Props = Map<string, any>
 
@@ -17,14 +16,19 @@ import { atom, map as nanostoresMap, MapStore } from 'nanostores';
   }
 
 // INTERFACES
-  interface ComponentStruct<S extends object> {
+  interface ComponentStruct<S> {
     state: MapStore<S>,
-    render: () => TemplateResult<1>,
-    renderFunction?: RenderFunction,
+    mounthed: Atom<boolean>
+  }
+
+  export interface ComponentPayload<State,Props> {
+    state?: State
+    props?: Props 
+    hooks: Partial<ComponentHooks>
   }
 
   interface ComponentConstructor<Props> {
-    new (upd: UpdateMethod, props?: any): Component<any,Props>
+    new (payload: ComponentPayload<any, Props>): Component<any,Props,any>
   }
 
   export interface ComponentHooks {
@@ -32,56 +36,52 @@ import { atom, map as nanostoresMap, MapStore } from 'nanostores';
     onUpdate: UpdateMethod
   }
 
-export default class Component<State extends object, Props> implements ComponentStruct<State> {
+// STORE
+  import { globalStore } from '~/store'
 
-  private hash: string;
-  private hooks?: Partial<ComponentHooks>;
-  private onNextUpdate: any;
+// COMPONENT
+  export default abstract class Component<State, Props, ComponentKeys> implements ComponentStruct<State> {
 
-  protected globalStore = globalStore('global');
+    protected hash: string;
+    private onNextUpdate: any;
 
-  protected components: Map<string, Component<any,any>> = new Map();
-  protected props?: Props;
+    protected globalStore = globalStore('global');
 
-  public state: MapStore<State>;
-  public mounthed = atom(false);
+    protected components: Map<ComponentKeys, Component<any,any,any>> = new Map();
+    protected hooks: Partial<ComponentHooks>;
+    protected props?: Props;
 
-  constructor(state: State, hooks?: Partial<ComponentHooks>) {
-    
-    this.state  = nanostoresMap(state);
-    this.hash   = Math.random().toString(36).substring(7).toUpperCase();
+    public state: MapStore<State>;
+    public mounthed = atom(false);
 
-    if ( hooks ) this.hooksInit(hooks);
-
-  }
-
-  protected notifyChildrens() {
-    if ( this.components.size ) {
-      this.components.forEach(component => {
-        if ( component.mounthed.get() === false ) component.mounthed.set(true);
-      })
-    }
-  } 
-
-  private hooksInit(hooks: Partial<ComponentHooks>) {
-
-    this.hooks = hooks;
-
-    this.mounthed.listen(() => { 
-
-      console.debug(`[Component mounth]: ${ this.constructor.name } was mounted | ID: ${ this.hash  }`);
-
-      if ( hooks.onMount !== undefined ) {
-        hooks.onMount(); this.notifyChildrens(); this.mounthed.off();
-      }
-
-    })
-    
-    this.state.listen(() => { 
+    constructor(payload: ComponentPayload<State,Props>) {
       
-      console.debug(`[Component update]: ${ this.constructor.name } was updated | ID: ${ this.hash  }`);
+      this.state          = nanostoresMap(payload.state);
+      this.props          = payload.props;
+      this.hooks          = this.hooksInit(payload.hooks);
+      this.hash           = Math.random().toString(36).slice(-6).toUpperCase();
 
-      if ( hooks.onUpdate ) hooks.onUpdate().then(() => {
+      this.onNextUpdate = () => this.notifyChildrens();
+
+    }
+
+    private hooksInit(hooks: Partial<ComponentHooks>): Partial<ComponentHooks> {
+
+      this.mounthed.listen(() => { 
+
+        if ( hooks.onMount !== undefined ) hooks.onMount()
+
+        console.debug(`[Component mounth]: ID: ${ this.hash } | ${ this.constructor.name } was mounted`,);
+
+        this.mounthed.off();
+
+      })
+
+      this.state.listen(async () => { 
+        
+        console.debug(`[Component update]: ID: ${ this.hash } | ${ this.constructor.name } was updated`);
+
+        if ( hooks.onUpdate ) await hooks.onUpdate()
 
         if ( this.mounthed.get() === false ) {
           this.notifyChildrens(); this.mounthed.set(true)
@@ -91,38 +91,41 @@ export default class Component<State extends object, Props> implements Component
           this.onNextUpdate(); this.onNextUpdate = null;
         }
 
-      });
+      })
 
-    })
+      return hooks
 
-  }
-
-  public getComponent<S extends object, P>(alias: string): Component<S,P> | undefined {
-
-    if ( this.components.size === 0 ) return void 0;
-
-    return this.components.get(alias);
-
-  }
-
-  protected registerComponent<ComponentProps>(alias: string, component: ComponentConstructor<ComponentProps>, props?: ComponentProps,) {
-
-    if ( this.hooks?.onUpdate ) {
-
-      this.components.set(alias, new component(this.hooks.onUpdate, props)); 
-      
-      this.onNextUpdate = this.notifyChildrens();
-
-      return this.components.get(alias);
-
-    } else {
-      throw new Error(`[Component Init]: У компонента не указана функции корневого обновления | onUpdate: ${ this.hooks?.onUpdate }`);
     }
 
-  }
+    protected registerComponent<Props extends object>(alias: ComponentKeys, component: ComponentConstructor<Props>, props?: Props) {
 
-  render() {
-    return html`${ nothing }`;
-  }
+      if ( this.hooks?.onUpdate ) {
 
-}
+        const payload: ComponentPayload<any, Props> = {
+          state: null,
+          props: props,
+          hooks: this.hooks
+        }
+
+        this.components.set(alias, new component(payload)); 
+
+        return this.components.get(alias);
+
+      } else {
+        throw new Error(`[Component Init]: У компонента не указана функции корневого обновления | onUpdate: ${ this.hooks?.onUpdate }`);
+      }
+
+    }
+
+    // Notify children components about render cycle completion.
+    private notifyChildrens() {
+      if ( this.components.size ) {
+        this.components.forEach(component => {
+          if ( component.mounthed.get() === false ) component.mounthed.set(true);
+        })
+      }
+    } 
+
+    abstract render(props?: any): TemplateResult<1>
+
+  }

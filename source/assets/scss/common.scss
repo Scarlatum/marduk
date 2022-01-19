@@ -4,6 +4,9 @@
   --color-base-500-75: hsla(240deg,25%,10%,75%);
   --color-base-500-50: hsla(240deg,25%,10%,50%);
   --color-base-500-25: hsla(240deg,25%,10%,25%);
+
+  --font-size-normal: 2vh;
+
 }
 
 * {
@@ -26,5 +29,9 @@
 body {
   margin: 0;
   padding: 0;
+}
+
+#application {
+  position: relative;
 }
 

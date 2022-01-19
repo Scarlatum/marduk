@@ -1,49 +1,60 @@
-import { html, render, nothing } from 'lit-html';
+import { html, render as LitRender, nothing } from 'lit-html';
 
 // COMPONENT
-  import Component   from '~/component';
+  import Component, { RenderFunction } from '~/component';
 
 // STYLES
   import './assets/scss/common.scss';
 
-// STATE
+// INTERFACES
   interface ApplicationState {
     counter: number
   }
 
-// INNER COMPONENTS
-  type ComponentsKeys = 'MainBlock'
+// COMPONENTS
+  type ComponentKeys = 'MainBlock';
 
-  import MainBlockComponent from '~/blocks/main';
+  import MainBlock from '~/blocks/main';
 
 // MODULE
-  export class Instance extends Component<ApplicationState, ComponentsKeys> {
+  export class Instance extends Component<ApplicationState, any, ComponentKeys> {
+
+    private static update: RenderFunction;
 
     constructor() {
 
-      super({ counter: 0 });
+      const hooks = {
+        onUpdate: Instance.updateRoot,
+        onMount: () => this.notifyChildrens()
+      }
 
-      this.components.set('MainBlock', new MainBlockComponent(() => this.updateRoot()));
+      super({ parentInstance: null, hooks });
 
-      this.state.subscribe(() => this.updateRoot().then(() => this.notifyChildrens()));
+      Instance.update = () => this.render();
 
-    }
-    
+      this.registerComponent('MainBlock', MainBlock);
+
+      Instance.updateRoot().then(() => this.mounthed.set(true));
+
+    }   
+
     render() {
       return html`
-        <div id="application">
-          ${ this.components.get('MainBlock')!.render() || nothing }
+        <div class="application" id="${ this.constructor.name }-${ this.hash }">
+          ${ this.components.get('MainBlock')?.render() || nothing }
         </div>
       `
     }
 
-    public async updateRoot(): Promise<void> {
+    static updateRoot(): Promise<void> {
       return new Promise((res) => {
-        render(this.render(), document.body); res()
+        LitRender(Instance.update(), document.body); res()
       })
     }
 
   }
+
+
 
 // INIT INSTANCE
   export default new Instance();

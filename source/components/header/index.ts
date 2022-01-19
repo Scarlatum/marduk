@@ -1,52 +1,57 @@
 import { html } from 'lit-html';
 
-
 // Application Components
-  import Component, { ComponentHooks } from '~/component';
+  import Component, { ComponentPayload } from '~/component';
 
 // STYLES
   import './styles.scss';
+
+// COMPONENTS
+  import Button from '~/components/button'
 
 // TYPES
   type HeaderLink = { link: string, title: string };
 
 // INTERFACES
-  interface HeaderState {
-    buttonTitle: string
+  interface State {
   }
 
   interface Props {
-    title: string
   }
 
 // MODULE
-export default class Header extends Component<HeaderState, Props> {
+export default class Header extends Component<State, Props, any> {
 
-  static NAVIGATION_LINKS: Array<HeaderLink> = [
+  private static NAVIGATION_LINKS: Array<HeaderLink> = [
     { link: './', title: 'Home' },
     { link: './', title: 'Service' },
     { link: './', title: 'Prices' },
     { link: './', title: 'Abouts Us' },
   ];
 
-  constructor(updateRootMethod: ComponentHooks['onUpdate'], props: Props) { 
+  renderFunction = this.render;
 
-    super({ buttonTitle: props.title || 'Work with us!' }, {
-      onUpdate: updateRootMethod
-    });
+  constructor({ state, props, hooks }: ComponentPayload<State, Props>) { 
+
+    super({ state, props, hooks });
+
+    const buttonComponent = this.registerComponent('CommonButton', Button, {
+      title: 'Something',
+      onClick: () => {
+        buttonComponent!.state.setKey('title', `Number-${ Math.trunc(100 * Math.random()) }`);
+      }
+    })
 
   }
 
   render() {
     return html`
-      <nav class="navigation-container" id="navigation">
+      <nav class="navigation-container" id="${ this.constructor.name }-${ this.hash }">
         <span></span>
         <div class=navigation-links>
           ${ Array.from(Header.NAVIGATION_LINKS, ref => html`<a href="${ ref.link }">${ ref.title }</a>`) }
         </div>
-        <button @click="${ () => this.state.setKey('buttonTitle', `Number:  ${ Math.trunc(100 * Math.random())}`) }">
-          ${ this.state.get().buttonTitle }
-        </button>
+        ${ this.components.get('CommonButton')?.render() }
       </nav>
     `
   }
