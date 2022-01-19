@@ -118,7 +118,7 @@ import { atom, map as nanostoresMap } from 'nanostores';
     }
 
     // Notify children components about render cycle completion.
-    private notifyChildrens() {
+    protected notifyChildrens() {
       if ( this.components.size ) {
         this.components.forEach(component => {
           if ( component.mounthed.get() === false ) component.mounthed.set(true);

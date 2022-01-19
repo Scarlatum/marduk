@@ -28,7 +28,7 @@ import { html, render as LitRender, nothing } from 'lit-html';
         onMount: () => this.notifyChildrens()
       }
 
-      super({ parentInstance: null, hooks });
+      super({ hooks });
 
       Instance.update = () => this.render();
 
