@@ -24,8 +24,6 @@
       title: 'button'
     }
 
-    public renderFunction = this.render;
-
     constructor({ hooks, props }: ComponentPayload<State, Props>) {
 
       super({ hooks, props, state: {
@@ -33,6 +31,10 @@
       }});
 
     }
+
+    protected onMount() {}
+
+    protected onUpdate() {}
 
     render() {
 

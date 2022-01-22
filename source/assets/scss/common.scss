@@ -1,9 +1,9 @@
 :root {
-  --color-accent-500: hsl(0deg 0% 85%);
-  --color-base-500: hsl(240deg 25% 10%);
-  --color-base-500-75: hsla(240deg,25%,10%,75%);
-  --color-base-500-50: hsla(240deg,25%,10%,50%);
-  --color-base-500-25: hsla(240deg,25%,10%,25%);
+  --color-accent-500:  hsla(30, 12.5%, 40%, 1);
+  --color-base-500:    hsla(240, 5%, 8%, 100%);
+  --color-base-500-75: hsla(240, 5%, 8%, 75%);
+  --color-base-500-50: hsla(240, 5%, 8%, 50%);
+  --color-base-500-25: hsla(240, 5%, 8%, 25%);
 
   --font-size-normal: 2vh;
 
@@ -29,6 +29,8 @@
 body {
   margin: 0;
   padding: 0;
+  height: 210vh;
+  background-color: var(--color-base-500);
 }
 
 #application {

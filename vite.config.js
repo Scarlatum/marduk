@@ -13,6 +13,9 @@ export default defineConfig({
   build: {
      target: 'ES2020',
      sourcemap: true,
+     rollupOptions: {
+       treeshake: 'recommended'
+     }
   },
   resolve: {
     alias: {

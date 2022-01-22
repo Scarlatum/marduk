@@ -2,7 +2,7 @@ import type { TemplateResult } from 'lit-html';
 import { atom, map as nanostoresMap } from 'nanostores';
 
 // TYPES
-  import type { MapStore, Atom  } from 'nanostores';
+  import type { MapStore, WritableAtom  } from 'nanostores';
 
   export type RenderFunction = () => TemplateResult<1>;
   export type UpdateMethod   = () => Promise<void>;
@@ -16,10 +16,8 @@ import { atom, map as nanostoresMap } from 'nanostores';
   }
 
 // INTERFACES
-  interface ComponentStruct<S> {
-    state: MapStore<S>,
-    mounthed: Atom<boolean>
-  }
+  // interface ComponentStruct<S> {
+  // }
 
   export interface ComponentPayload<State,Props> {
     state?: State
@@ -40,56 +38,70 @@ import { atom, map as nanostoresMap } from 'nanostores';
   import { globalStore } from '~/store'
 
 // COMPONENT
-  export default abstract class Component<State, Props, ComponentKeys> implements ComponentStruct<State> {
+  export default abstract class Component<State, Props, ComponentKeys> {
 
-    protected hash: string;
-    private onNextUpdate: any;
+    // COMPONENT HASH ID
+    protected readonly hash: string = Math.random().toString(36).slice(-6).toUpperCase();
 
-    protected globalStore = globalStore('global');
+    // STATE OF COMPONENT AND GLOBAL STATE
+    protected readonly globalStore = globalStore('global');
+    protected readonly state: MapStore<State>;
 
-    protected components: Map<ComponentKeys, Component<any,any,any>> = new Map();
-    protected hooks: Partial<ComponentHooks>;
-    protected props?: Props;
+    // CHILD COMPONENTS
+    protected readonly components: Map<ComponentKeys, Component<any,any,any>> = new Map();
 
-    public state: MapStore<State>;
-    public mounthed = atom(false);
+    // PROPS'N'HOOKS
+    protected readonly hooks: Partial<ComponentHooks>;
+    protected readonly props?: Props;
 
+    // MOUNT STATE
+    protected readonly mounthed: WritableAtom<boolean> = atom(false);
+
+    //
     constructor(payload: ComponentPayload<State,Props>) {
-      
-      this.state          = nanostoresMap(payload.state);
-      this.props          = payload.props;
-      this.hooks          = this.hooksInit(payload.hooks);
-      this.hash           = Math.random().toString(36).slice(-6).toUpperCase();
 
-      this.onNextUpdate = () => this.notifyChildrens();
+      if ( payload?.hooks?.onUpdate === undefined ) {
+        throw new Error(`[Component Init]: У компонента не указана функции корневого обновления | onUpdate: ${ payload.hooks.onUpdate }`);
+      }
+
+      this.state = nanostoresMap(payload.state);
+      this.props = payload.props;
+      this.hooks = this.hooksInit(payload.hooks);
 
     }
 
+    //
     private hooksInit(hooks: Partial<ComponentHooks>): Partial<ComponentHooks> {
 
       this.mounthed.listen(() => { 
 
-        if ( hooks.onMount !== undefined ) hooks.onMount()
+        // Run parent mouth hook
+        if ( hooks.onMount ) hooks.onMount()
 
+        // Notify childrens about end of render cycle 
+        this.notifyChildrens();
+
+        // OnMount
+        if ( this.onMount ) this.onMount();
+
+        // DEBUG
         console.debug(`[Component mounth]: ID: ${ this.hash } | ${ this.constructor.name } was mounted`,);
-
-        this.mounthed.off();
 
       })
 
       this.state.listen(async () => { 
         
+        // Await render
+        if ( hooks.onUpdate ) await hooks.onUpdate();
+
+        // After render
+        this.notifyChildrens();
+
+        // OnUpdate
+        if ( this.onUpdate ) this.onUpdate();
+
+        // DEBUG
         console.debug(`[Component update]: ID: ${ this.hash } | ${ this.constructor.name } was updated`);
-
-        if ( hooks.onUpdate ) await hooks.onUpdate()
-
-        if ( this.mounthed.get() === false ) {
-          this.notifyChildrens(); this.mounthed.set(true)
-        }
-
-        if ( this.onNextUpdate ) {
-          this.onNextUpdate(); this.onNextUpdate = null;
-        }
 
       })
 
@@ -97,23 +109,18 @@ import { atom, map as nanostoresMap } from 'nanostores';
 
     }
 
+    //
     protected registerComponent<Props extends object>(alias: ComponentKeys, component: ComponentConstructor<Props>, props?: Props) {
 
-      if ( this.hooks?.onUpdate ) {
-
-        const payload: ComponentPayload<any, Props> = {
-          state: null,
-          props: props,
-          hooks: this.hooks
-        }
-
-        this.components.set(alias, new component(payload)); 
-
-        return this.components.get(alias);
-
-      } else {
-        throw new Error(`[Component Init]: У компонента не указана функции корневого обновления | onUpdate: ${ this.hooks?.onUpdate }`);
+      const payload: ComponentPayload<unknown, Props> = {
+        state: null,
+        props: props,
+        hooks: this.hooks
       }
+
+      this.components.set(alias, new component(payload));
+
+      return this.components.get(alias);
 
     }
 
@@ -126,6 +133,10 @@ import { atom, map as nanostoresMap } from 'nanostores';
       }
     } 
 
-    abstract render(props?: any): TemplateResult<1>
+    abstract render(props?: object): TemplateResult<1>
+
+    // Lifecycle methods declaration
+    protected abstract onMount(): void;
+    protected abstract onUpdate(): void;
 
   }
