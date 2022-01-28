@@ -77,7 +77,7 @@ import { atom, map as nanostoresMap } from 'nanostores';
         if ( this.onMount ) this.onMount();
 
         // DEBUG
-        console.debug(`[Component mounth]: ID: ${ this.hash } | ${ this.constructor.name } was mounted`,);
+        console.debug(`[Component mounth]: ID: ${ this.hash } | ${ this.constructor.name } was mounted `,);
 
       })
 
@@ -93,7 +93,7 @@ import { atom, map as nanostoresMap } from 'nanostores';
         if ( this.onUpdate ) this.onUpdate();
 
         // DEBUG
-        console.debug(`[Component update]: ID: ${ this.hash } | ${ this.constructor.name } was updated`);
+        console.debug(`[Component update]: ID: ${ this.hash } | ${ this.constructor.name } was updated `);
 
       })
 
@@ -115,13 +115,21 @@ import { atom, map as nanostoresMap } from 'nanostores';
 
     }
 
+    protected getElement({ constructor, hash }: Component<any,any,any>): boolean {
+      return Boolean(document.getElementById(`${ constructor.name }-${ hash }`))
+    }
+
     // Notify children components about render cycle completion.
-    protected notifyChildrens() {
-      if ( this.components.size ) {
-        this.components.forEach(component => {
-          if ( component.mounthed.get() === false ) component.mounthed.set(true);
-        })
-      }
+    protected notifyChildrens(): void {
+
+      if ( this.components.size === 0 ) return
+
+      this.components.forEach(childComponent => {
+        if ( childComponent.mounthed.get() === false && this.getElement(childComponent) ) {
+          childComponent.mounthed.set(true);
+        }
+      })
+
     } 
 
     abstract render(props?: object): TemplateResult<1>

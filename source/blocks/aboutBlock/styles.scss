@@ -1,17 +1,30 @@
 .about {
 	&-container {
+
+		padding: 5vh 15vw;
+		display: grid;
+		gap: 2vh 0;
+
 		h1 {
 			color: white;
 			display: block;
 			text-align: center;
 		}
+
+		hr {
+			width: 100%;
+			border-color: var(--color-base-500);
+		}
+
+	}
+	&-tabs {
+		display: grid;
+		gap: 0 2vw;
+		grid-template-columns: repeat(4, 1fr);
 	}
 	&-cards {
-		&-container {
-			padding: 5vh 15vw;
-			display: grid;
-			gap: 2vw;
-			grid-template-columns: repeat(3, 1fr);
-		}
+		display: grid;
+		gap: 2vw;
+		grid-template-columns: repeat(3, 1fr);
 	}
 }

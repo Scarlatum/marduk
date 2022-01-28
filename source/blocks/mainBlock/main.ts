@@ -95,7 +95,8 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 
     private ImageAnimation?: Animation;
 
-    public textRef: Ref<HTMLElement> = createRef();
+    private textRef: Ref<HTMLElement> = createRef();
+    private feedRef: Ref<HTMLElement> = createRef();
 
     private inViewPort = false;
 
@@ -235,6 +236,17 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
         this.state.setKey('cards', [ ...state.cards, card ])
       }
 
+      if ( this.feedRef.value ) {
+
+        const { scrollHeight } = this.feedRef.value;
+ 
+        this.feedRef.value.scrollTo({
+          top: scrollHeight,
+          behavior: 'smooth',
+        });
+
+      }
+
     }
 
     render() {
@@ -260,11 +272,12 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
           <div id="CardContainer" 
             class="main-preview" 
             style="--s: ${ s }; --e: ${ e }"
+            ${ ref(this.feedRef) }
             >
 
             ${ state.cards.map((card) => card?.render()) }
 
-            ${ this.components.get('FeedButton')?.render() };
+            ${ this.components.get('FeedButton')?.render() }
 
           </div>
           <div class="main-footer">

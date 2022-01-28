@@ -55,13 +55,17 @@ import { html } from 'lit-html';
       this.store.setKey('mainImage', this.state.get().image.fullsize);
     }
 
-    onMount() {
+    onMount(): void {
+
+      const cardElement = document.getElementById(`${ this.constructor.name }-${ this.hash }`);
+
+      if ( cardElement === null ) return;
 
       const intersection = new IntersectionObserver((entry) => {
-        this.animateCard(entry[0].target, entry[0].isIntersecting)
+        this.animateCard(cardElement, entry[0].isIntersecting)
       }, { rootMargin: '-100px' })
-
-      intersection.observe(document.getElementById(`${ this.constructor.name }-${ this.hash }`)!)
+      
+      intersection.observe(cardElement)
 
     }
 
@@ -75,8 +79,7 @@ import { html } from 'lit-html';
           { opacity: 0 }, 
           { opacity: 1 }
         ], {
-          delay: 250,
-          duration: 1000,
+          duration: 750,
           fill: 'both',
         })
 

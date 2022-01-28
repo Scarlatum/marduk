@@ -1,4 +1,4 @@
-import { html } from 'lit-html';
+import { html, nothing } from 'lit-html';
 
 // STYLES
   import './styles.scss'
@@ -8,23 +8,33 @@ import { html } from 'lit-html';
   import mechImage  from '~/assets/images/mech.png?w=1440;300&format=webp;avif';
   // @ts-ignore
   import akImage    from '~/assets/images/ak.jpg?w=1440;300&format=webp;avif';
+  // @ts-ignore
+  import motsar2    from '~/assets/images/motsar-2.jpg?w=1440;300&format=webp;avif';
 
 // COMPONENT CLASS
   import EccheumaComponent, { ComponentPayload } from '~/component'
 
 // COMPONENTS
+
+  type ComponentsKeys = `AboutCard-${ number }` | `Button-${ TAB }`;
+
   import Card, { State as CardState, Props as CardProps } from '~/components/card/card';
+  import Button from '~/components/button/button';
 
 // INTERFACES'N'TYPES
+
+  type TAB = 'BOB' | 'GOB' | 'LAB' | 'DAB';
+
   export interface State {
     cards: Array<EccheumaComponent<CardState,CardProps,any>>
+    inViewPort: boolean
   }
 
   export interface Props {
 
   }
 
-export default class AboutBlock extends EccheumaComponent<State,Props,any> {
+export default class AboutBlock extends EccheumaComponent<State,Props,ComponentsKeys> {
 
   private static CARD_DATA: Array<CardProps> = [
     {
@@ -47,17 +57,39 @@ export default class AboutBlock extends EccheumaComponent<State,Props,any> {
         preview: akImage[2],
       }
     },
+    {
+      title: 'Test title for me',
+      image: {
+        fullsize: {
+          webp: motsar2[0],
+          avif: motsar2[1],
+        },
+        preview: motsar2[2],
+      }
+    },
   ]
+
+  private TABS: Array<TAB> = ['BOB', 'GOB', 'LAB', 'DAB'];
 
   constructor(payload: ComponentPayload<State, Props>) { 
 
     super({ ...payload, state: {
-      cards: new Array()
+      cards: new Array(),
+      inViewPort: false,
     }});
 
     this.state.setKey('cards', Array.from(AboutBlock.CARD_DATA, (data, i) => {
       return this.registerComponent(`AboutCard-${ i }`, Card, data)!
     }))
+
+    this.TABS.forEach(name => {
+      this.registerComponent(`Button-${ name }`, Button, { 
+        title: name,
+        onClick() {
+          console.log(name);
+        }
+      })
+    })
 
   }
 
@@ -67,14 +99,41 @@ export default class AboutBlock extends EccheumaComponent<State,Props,any> {
 
   onMount() {
 
+    // const element = document.getElementById(`${ this.constructor.name }-${ this.hash }`);
+
+    // if ( element ) {
+
+    //   const ISO = new IntersectionObserver((entry) => {
+
+    //     const inView = entry[0].isIntersecting;
+
+    //     if ( inView ) {
+    //       this.state.setKey('inViewPort', entry[0].isIntersecting); ISO.unobserve(element);
+    //     }
+
+    //   }, { rootMargin: '-1px' })
+
+    //   ISO.observe(element);
+
+    // }
+
   }
 
   render() {
+
+    const TABS  = Array.from(this.TABS, (name) => this.components.get(`Button-${ name }`)?.render());
+    const CARDS = this.state.get().cards.map(card => card.render())
+
     return html`
       <section class="about-container" id="${ this.constructor.name }-${ this.hash }">
         <h1>ABOUT THIS LANDING</h1>
-        <div class="about-cards-container">
-          ${ this.state.get().cards.map(card => card.render()) }
+        <hr>
+        <div class="about-tabs">
+          ${ TABS }
+        </div>
+        <hr>
+        <div class="about-cards">
+          ${ CARDS }
         </div>
       </section>
     `

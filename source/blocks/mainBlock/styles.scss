@@ -7,7 +7,7 @@
     position: relative;
     grid-template: {
       rows: 10vh 80vh 10vh;
-      columns: 1fr 1fr;
+      columns: 6fr 3fr;
     };
 
     grid-template-areas: 
@@ -23,7 +23,6 @@
     height: 100vh;
     z-index: -1;
     overflow: hidden;
-    background: black;
     &:after {
       content: '';
       position: absolute;
@@ -47,7 +46,7 @@
 
     grid-area: about;
 
-    padding: 0 10vw;
+    padding: 0 5vw;
 
     display: grid;
     align-content: center;
@@ -83,9 +82,11 @@
     overflow-x: hidden;
     overflow-y: scroll;
     gap: 2vh;
-    padding: 2vh 5vw;
-    // -webkit-mask-image: linear-gradient(180deg, transparent, black var(--s, 0%) var(--e, 100%), transparent);
-    // mask-image: linear-gradient(180deg, black, transparent);
+    padding: 2vh 4vw;
+
+    background: var(--color-base-500-75);
+    backdrop-filter: blur(10px);
+
   }
   &-footer {
     grid-area: footer;
