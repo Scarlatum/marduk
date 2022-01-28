@@ -14,12 +14,12 @@ import { html, render as LitRender } from 'lit-html';
 // COMPONENTS
   type ComponentKeys = `MainBlock` | `AboutBlock` | `FooterBlock`;
 
-  import MainBlock from '~/blocks/mainBlock/main';
-  import AboutBlock from '~/blocks/aboutBlock/about';
+  import MainBlock   from '~/blocks/mainBlock/main';
+  import AboutBlock  from '~/blocks/aboutBlock/about';
   import FooterBlock from '~/blocks/footerBlock/footer';
 
 // MODULE
-  export class Instance extends Component<ApplicationState, any, ComponentKeys> {
+  export class Instance extends Component<ApplicationState, null, ComponentKeys> {
 
     private static update: RenderFunction;
 
@@ -62,7 +62,7 @@ import { html, render as LitRender } from 'lit-html';
 
     static updateRoot(): Promise<void> {
       return new Promise((res) => {
-        LitRender(Instance.update(), document.body); res()
+        LitRender(Instance.update(), document.body, {  }); res()
       })
     }
 

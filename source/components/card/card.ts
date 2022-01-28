@@ -7,14 +7,22 @@ import { html } from 'lit-html';
   import './styles.scss'
 
 // ASSETS
-  import placeholderImage from '~/assets/images/mech.png';
+
+  // @ts-ignore
+  import placeholderImageWEBP from '~/assets/images/mech.png?format=webp';
+  // @ts-ignore
+  import placeholderImageAVIF from '~/assets/images/mech.png?format=avif';
+  // @ts-ignore
+  import placeholderImageHOLD from '~/assets/images/mech.png?format=webp&w=300';
 
 // INTERFACES
+
+  import type { ImageStruct } from '~/types/common';
 
   export interface State {
     title: string
     image: {
-      full: string,
+      fullsize: ImageStruct,
       preview: string,
     }
   }
@@ -26,20 +34,25 @@ import { html } from 'lit-html';
 // MODULE
   export default class Card extends Component<State, Props, any> {
 
+    static placeholderImage: ImageStruct = {
+      webp: placeholderImageWEBP,
+      avif: placeholderImageAVIF,
+    }
+
     constructor({ props, hooks }: ComponentPayload<State, Props>) {
 
       super({ props, hooks, state: {
         title: props?.title || 'Default title',
         image: props?.image || {
-          full: placeholderImage,
-          preview: placeholderImage,
+          fullsize: Card.placeholderImage,
+          preview: placeholderImageHOLD,
         }
       }});
 
     }
 
     setMainImage() {
-      this.globalStore.setKey('mainImage', this.state.get().image.full);
+      this.store.setKey('mainImage', this.state.get().image.fullsize);
     }
 
     onMount() {
@@ -83,7 +96,7 @@ import { html } from 'lit-html';
         <div class="card-container" id="${ this.constructor.name }-${ this.hash }" @click=${ () => this.setMainImage() }>
           <header class="card-header">${ title }</header>
           <picture class="card-picture">
-            <img src="${ image.preview || placeholderImage }">
+            <img src="${ image.preview || placeholderImageHOLD }">
           </picture>
           <article class="card-body">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. 

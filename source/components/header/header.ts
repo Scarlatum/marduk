@@ -6,9 +6,6 @@ import { html } from 'lit-html';
 // STYLES
   import './styles.scss';
 
-// COMPONENTS
-  import Button from '~/components/button/button'
-
 // ASSETS
   // @ts-ignore
   import Icon  from '~/assets/images/ic_launcher.png';
@@ -18,6 +15,7 @@ import { html } from 'lit-html';
 
 // INTERFACES
   interface State {
+    curentTab: string
   }
 
   interface Props {
@@ -33,31 +31,44 @@ export default class Header extends Component<State, Props, any> {
     { link: './', title: 'Abouts Us' },
   ];
 
-  protected onMount() {}
+  constructor({ props, hooks }: ComponentPayload<State, Props>) { 
 
-  protected onUpdate() {}
+    const state: State = {
+      curentTab: 'Home'
+    }
 
-  constructor({ state, props, hooks }: ComponentPayload<State, Props>) { 
+    super({ props, hooks, state });
 
-    super({ state, props, hooks });
-
-    const buttonComponent = this.registerComponent('CommonButton', Button, {
-      title: 'Something',
-      onClick: () => {
-        buttonComponent!.state.setKey('title', `Number-${ Math.trunc(100 * Math.random()) }`);
-      }
-    })
+    this.state.setKey('curentTab', Header.NAVIGATION_LINKS[0].title);
 
   }
 
+  onMount() {
+
+  };
+  
+  onUpdate() {
+
+  };
+
   render() {
+
+    const { curentTab } = this.state.get();
+
+    const LinkElements = Array.from(Header.NAVIGATION_LINKS, (ref) => html`
+      <span 
+        data-active="${ ref.title === curentTab }" 
+        @click="${ () => this.state.setKey('curentTab', ref.title) }">
+        ${ ref.title }
+      </span>
+    `)
+
     return html`
       <nav class="navigation-container" id="${ this.constructor.name }-${ this.hash }">
         <span style="--logoPath: url(${ Icon })"></span>
         <div class=navigation-links>
-          ${ Array.from(Header.NAVIGATION_LINKS, ref => html`<a href="${ ref.link }">${ ref.title }</a>`) }
+          ${ LinkElements }
         </div>
-        ${ this.components.get('CommonButton')?.render() }
       </nav>
     `
   }

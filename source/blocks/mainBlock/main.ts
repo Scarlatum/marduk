@@ -18,42 +18,53 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 // IMAGE
 
   // @ts-ignore
-  import motsar1    from '~/assets/images/motsar-1.jpg?w=1440;300&format=webp';
+  import motsar1    from '~/assets/images/motsar-1.jpg?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import motsar2    from '~/assets/images/motsar-2.jpg?w=1440;300&format=webp';
+  import motsar2    from '~/assets/images/motsar-2.jpg?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import shipImage  from '~/assets/images/ship.png?w=1440;300&format=webp';
+  import shipImage  from '~/assets/images/ship.png?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import mechImage  from `~/assets/images/mech.png?w=1440;300&format=webp`;
+  import mechImage  from '~/assets/images/mech.png?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import akImage  from `~/assets/images/ak.jpg?w=1440;300&format=webp`;
+  import akImage    from '~/assets/images/ak.jpg?w=1440;300&format=webp;avif';
 
 // CARD DATA 
   const CARD_DATA: Array<CardProps> = [
     {
       title: 'Test title FOR GOD OF MACHINE',
       image: {
-        full: motsar2[0],
-        preview: motsar2[1]
+        fullsize: {
+          webp: motsar1[0],
+          avif: motsar1[1],
+        },
+        preview: motsar1[2],
       }
     },
     {
-      title: 'Test title for me',
+      title: 'Test title FOR GOD OF MACHINE',
       image: {
-        full: motsar1[0],
-        preview: motsar1[1]
+        fullsize: {
+          webp: motsar2[0],
+          avif: motsar2[1],
+        },
+        preview: motsar2[2],
       }
     },
     {
-      title: 'Test title for feed',
+      title: 'Test title FOR GOD OF MACHINE',
       image: {
-        full: shipImage[0],
-        preview: shipImage[1]
+        fullsize: {
+          webp: shipImage[0],
+          avif: shipImage[1],
+        },
+        preview: shipImage[2],
       }
-    }
+    },
   ]
 
 // INTERFACES'N'TYPES
+
+  import type { ImageStruct } from '~/types/common';
 
   type ImageTransform = { x: number, y: number };
   type MaskParams     = { e: number, s: number };
@@ -61,7 +72,7 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
   export interface State {
     imageShift: ImageTransform
     maskParams: MaskParams
-    image: string,
+    image: ImageStruct,
     cards: Array<EccheumaComponent<CardState,CardProps,any>>
   }
 
@@ -70,12 +81,15 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
   }
 
 // MODULE
-  export default class MainBlockComponent extends EccheumaComponent<State, Props, ComponentsKeys> {
+  export default class MainBlock extends EccheumaComponent<State, Props, ComponentsKeys> {
 
     private static staticState: State = { 
       imageShift: { x: 0, y: 0 }, 
       maskParams: { e: 0, s: 0 }, 
-      image: motsar2[0],
+      image: {
+        webp: motsar1[0],
+        avif: motsar1[1],
+      },
       cards: new Array(),
     }
 
@@ -88,7 +102,7 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
     constructor({ hooks, props }: ComponentPayload<State, Props>) { 
 
       super({ hooks, props, state: { 
-        ...MainBlockComponent.staticState
+        ...MainBlock.staticState
       }});
         
       // Set State
@@ -137,8 +151,8 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 
       this.ImageAnimation.pause(); 
 
-      // Global state listener
-      this.globalStore.listen((value, key) => {
+      // Global store listener
+      this.store.listen((value, key) => {
         switch (key) {
           case 'mainImage': this.changeImage(value[key], image)
         }
@@ -162,19 +176,23 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 
     }
 
-    private changeImage(imagePath: string, image: HTMLImageElement) {
+    private changeImage(imagePath: ImageStruct, image: HTMLImageElement) {
 
-      const anim = this.ImageAnimation!; 
+      const anim = this.ImageAnimation; 
 
-      anim.playbackRate = 1;
-      anim.play();
-      anim.onfinish = () => { 
+      if ( anim ) {
 
-        image.onload = () => anim.reverse(); 
+        anim.playbackRate = 1;
+        anim.play();
+        anim.onfinish = () => { 
 
-        anim.onfinish = null;
+          image.onload = () => anim.reverse(); 
 
-        this.state.setKey('image', imagePath); 
+          anim.onfinish = null;
+
+          this.state.setKey('image', imagePath); 
+
+        }
 
       }
 
@@ -203,8 +221,11 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       const data: CardState = { 
         title: 'Autism is a cure', 
         image: {
-          full: akImage[0],
-          preview: akImage[1],
+          fullsize: {
+            webp: akImage[0],
+            avif: akImage[1],
+          },
+          preview: akImage[2],
         }
       }
 
@@ -220,8 +241,8 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 
       const state = this.state.get();
 
-      const { x, y } = state.imageShift;
       const { s, e } = state.maskParams;
+      const { x, y } = state.imageShift;
 
       return html`
         <section class="main-container" id="${ this.constructor.name }-${ this.hash }">
@@ -229,7 +250,8 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
           ${ this.components.get('Header')?.render() }
 
           <picture class="main-image">
-            <img src="${ state.image }" style="--x: ${ x.toFixed(3) }px; --y: ${ y.toFixed(3) }px;" id="mainImage">
+            <source type="image/avif" srcset="${ state.image.avif }">
+            <img src="${ state.image.webp }" style="--x: ${ x.toFixed(3) }px; --y: ${ y.toFixed(3) }px;" id="mainImage">
           </picture>
           <div class="main-about" ${ ref(this.textRef) }>
             <h1>Anime girls as point of life</h1>
@@ -237,7 +259,7 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
           </div>
           <div id="CardContainer" 
             class="main-preview" 
-            style="--e: ${ e }; --s: ${ s }"
+            style="--s: ${ s }; --e: ${ e }"
             >
 
             ${ state.cards.map((card) => card?.render()) }

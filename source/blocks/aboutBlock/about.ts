@@ -5,9 +5,9 @@ import { html } from 'lit-html';
 
 // ASSETS
   // @ts-ignore
-  import mechImage  from `~/assets/images/mech.png?w=1440;300&format=webp`;
+  import mechImage  from '~/assets/images/mech.png?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import akImage  from `~/assets/images/ak.jpg?w=1440;300&format=webp`;
+  import akImage    from '~/assets/images/ak.jpg?w=1440;300&format=webp;avif';
 
 // COMPONENT CLASS
   import EccheumaComponent, { ComponentPayload } from '~/component'
@@ -30,15 +30,21 @@ export default class AboutBlock extends EccheumaComponent<State,Props,any> {
     {
       title: 'Test title FOR GOD OF MACHINE',
       image: {
-        full: mechImage[0],
-        preview: mechImage[1]
+        fullsize: {
+          webp: mechImage[0],
+          avif: mechImage[1],
+        },
+        preview: mechImage[2]
       }
     },
     {
       title: 'Test title for me',
       image: {
-        full: akImage[0],
-        preview: akImage[1]
+        fullsize: {
+          webp: akImage[0],
+          avif: akImage[1],
+        },
+        preview: akImage[2],
       }
     },
   ]

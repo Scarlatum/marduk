@@ -10,23 +10,15 @@ import { atom, map as nanostoresMap } from 'nanostores';
 
   export type Props = Map<string, any>
 
-// DECORATORS
-  export function reactive() {
-    console.log('reactive decorator')
-  }
-
 // INTERFACES
-  // interface ComponentStruct<S> {
-  // }
-
   export interface ComponentPayload<State,Props> {
     state?: State
     props?: Props 
     hooks: Partial<ComponentHooks>
   }
 
-  interface ComponentConstructor<Props> {
-    new (payload: ComponentPayload<any, Props>): Component<any,Props,any>
+  interface ComponentConstructor<S, Props> {
+    new (payload: ComponentPayload<S, Props>): Component<any,Props,any>
   }
 
   export interface ComponentHooks {
@@ -44,7 +36,7 @@ import { atom, map as nanostoresMap } from 'nanostores';
     protected readonly hash: string = Math.random().toString(36).slice(-6).toUpperCase();
 
     // STATE OF COMPONENT AND GLOBAL STATE
-    protected readonly globalStore = globalStore('global');
+    protected readonly store = globalStore('global');
     protected readonly state: MapStore<State>;
 
     // CHILD COMPONENTS
@@ -75,13 +67,13 @@ import { atom, map as nanostoresMap } from 'nanostores';
 
       this.mounthed.listen(() => { 
 
-        // Run parent mouth hook
+        // Run parent mouth hook.
         if ( hooks.onMount ) hooks.onMount()
 
-        // Notify childrens about end of render cycle 
+        // Notify childrens about end of render cycle.
         this.notifyChildrens();
 
-        // OnMount
+        // Fire onMount method.
         if ( this.onMount ) this.onMount();
 
         // DEBUG
@@ -91,13 +83,13 @@ import { atom, map as nanostoresMap } from 'nanostores';
 
       this.state.listen(async () => { 
         
-        // Await render
+        // Await render.
         if ( hooks.onUpdate ) await hooks.onUpdate();
 
-        // After render
+        // Notify children components about update of parent element, and update their mount state.
         this.notifyChildrens();
 
-        // OnUpdate
+        // Fire OnUpdate method.
         if ( this.onUpdate ) this.onUpdate();
 
         // DEBUG
@@ -110,10 +102,9 @@ import { atom, map as nanostoresMap } from 'nanostores';
     }
 
     //
-    protected registerComponent<Props extends object>(alias: ComponentKeys, component: ComponentConstructor<Props>, props?: Props) {
+    protected registerComponent<S,P>(alias: ComponentKeys, component: ComponentConstructor<S,P>, props?: P) {
 
-      const payload: ComponentPayload<unknown, Props> = {
-        state: null,
+      const payload: ComponentPayload<S,P> = {
         props: props,
         hooks: this.hooks
       }
@@ -135,7 +126,7 @@ import { atom, map as nanostoresMap } from 'nanostores';
 
     abstract render(props?: object): TemplateResult<1>
 
-    // Lifecycle methods declaration
+    // Lifecycle methods declaration.
     protected abstract onMount(): void;
     protected abstract onUpdate(): void;
 

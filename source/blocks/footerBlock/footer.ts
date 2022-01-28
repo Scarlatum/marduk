@@ -16,7 +16,7 @@ import { html } from 'lit-html';
   }
 
 // MODULE
-  export default class AboutBlock extends EccheumaComponent<State,Props,any> {
+  export default class FooterBlock extends EccheumaComponent<State,Props,any> {
 
     onUpdate() {
     }
