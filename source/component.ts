@@ -11,7 +11,9 @@
   export type UpdateMethod   = () => Promise<void>;
   export type NotifyMethod   = () => void;
 
-  export type Props = Map<string, any>
+  export type Props = Map<string, any>;
+
+  type ElementID = `${ string }-${ string }`;
 
 // INTERFACES
   export interface ComponentPayload<State,Props> {
@@ -69,7 +71,7 @@
 
     }
 
-    get elementID(): `${ string }-${ string }` {
+    get elementID(): ElementID {
       return `${ this.constructor.name }-${ this.hash }`;
     }
 
