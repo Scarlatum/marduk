@@ -25,9 +25,8 @@ import { html, render as LitRender } from 'lit-html';
 
     constructor() {
 
-      const hooks: ComponentHooks = {
+      const hooks: Partial<ComponentHooks> = {
         onUpdate: Instance.updateRoot,
-        onMount: () => this.notifyChildrens()
       }
 
       super({ hooks });
@@ -43,16 +42,15 @@ import { html, render as LitRender } from 'lit-html';
     }
 
     onMount() {
-      console.log('onMount');
+      
     } 
 
     onUpdate() {
-      console.log('onUpdate');
     }  
 
     render() {
       return html`
-        <div class="application" id="${ this.constructor.name }-${ this.hash }">
+        <div class="application" id="${ this.elementID }">
           ${ this.components.get('MainBlock')?.render() }
           ${ this.components.get('AboutBlock')?.render() }
           ${ this.components.get('FooterBlock')?.render() }

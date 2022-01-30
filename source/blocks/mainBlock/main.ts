@@ -31,7 +31,8 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 // CARD DATA 
   const CARD_DATA: Array<CardProps> = [
     {
-      title: 'Test title FOR GOD OF MACHINE',
+      title: 'MACHINE',
+      body: 'In sunt minim deserunt in mollit ullamco ut laboris ut id nisi officia sunt nisi occaecat. Eu proident est consequat ad elit cupidatat elit do aliqua in amet in veniam elit in laboris anim anim officia in incididunt sunt velit.',
       image: {
         fullsize: {
           webp: motsar1[0],
@@ -42,6 +43,7 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
     },
     {
       title: 'Test title FOR GOD OF MACHINE',
+      body: 'Fugiat occaecat laborum nisi elit velit officia ut amet nisi ad minim do reprehenderit in eu minim eiusmod ea adipisicing ea cillum ut cillum excepteur irure commodo quis laboris amet voluptate cupidatat aliquip cupidatat deserunt cillum dolore ullamco consectetur ad anim sit eiusmod voluptate reprehenderit sint aliqua ad incididunt anim eu deserunt ex qui cillum esse eu adipisicing excepteur voluptate laboris aliquip commodo non adipisicing in labore veniam dolore in esse adipisicing consectetur irure reprehenderit esse officia in sit et consequat proident adipisicing ullamco minim laboris irure non fugiat nulla veniam dolore commodo dolor dolore ea commodo velit ea fugiat id do elit sunt incididunt ea ut cillum elit ad velit consequat incididunt occaecat adipisicing deserunt aute sit duis pariatur in labore cillum nulla duis sed ut incididunt duis in ea eu culpa dolore nulla irure laboris amet ut non qui sit nulla laborum.',
       image: {
         fullsize: {
           webp: motsar2[0],
@@ -51,7 +53,8 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       }
     },
     {
-      title: 'Test title FOR GOD OF MACHINE',
+      title: 'Azurlane as meaning of life',
+      body: 'Excepteur nisi qui excepteur non consequat amet sit nulla duis et officia excepteur ut nisi magna anim in nulla commodo id laboris velit ex pariatur reprehenderit elit deserunt officia officia veniam irure et fugiat irure amet esse in pariatur.',
       image: {
         fullsize: {
           webp: shipImage[0],
@@ -73,6 +76,10 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
     imageShift: ImageTransform
     maskParams: MaskParams
     image: ImageStruct,
+    text: {
+      title: string,
+      body: string,
+    }
     cards: Array<EccheumaComponent<CardState,CardProps,any>>
   }
 
@@ -89,6 +96,10 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       image: {
         webp: motsar1[0],
         avif: motsar1[1],
+      },
+      text: {
+        title: 'TEST',
+        body: 'Reputiamo ammirabile sempre viviamo oportune giudice i udita sua seguitando forse'
       },
       cards: new Array(),
     }
@@ -155,13 +166,15 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       // Global store listener
       this.store.listen((value, key) => {
         switch (key) {
-          case 'mainImage': this.changeImage(value[key], image)
+          case 'mainImage': this.changeImage(value[key], image); break;
+          case 'mainText': this.state.setKey('text', value[key]); break;
         }
       }) 
 
     }
 
     protected onUpdate() {
+
     }
 
     private easeOutQuad(n: number) {
@@ -220,7 +233,8 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
     private pushNewCard(state: State) {
 
       const data: CardState = { 
-        title: 'Autism is a cure', 
+        title: 'Autism is a cure',
+        body: 'Lorem ipsum do aute id sit aliqua irure cillum mollit laborum laborum amet exercitation dolor dolore incididunt elit  sit adipisicing elit laboris eiusmod qui pariatur fugiat mollit sit est sit fugiat officia culpa adipisicing amet sit sed occaecat ex est magna ullamco reprehenderit laboris fugiat cupidatat ut mollit dolor commodo excepteur sunt deserunt cillum ullamco laboris sit nostrud id nisi velit duis cillum esse nisi pariatur veniam dolor ex in quis in dolor eu anim voluptate dolore consequat et consectetur ut reprehenderit ea commodo in id reprehenderit anim eiusmod cillum adipisicing duis id mollit culpa sed adipisicing enim ullamco dolore do minim do anim dolore sunt cupidatat ut laboris ut amet ad quis quis fugiat laboris dolore mollit in ut cillum cupidatat labore.',
         image: {
           fullsize: {
             webp: akImage[0],
@@ -230,22 +244,20 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
         }
       }
 
-      const card = this.registerComponent(`Card-${ state.cards.length + 1 }`, Card, data)!
+      const card = this.registerComponent(`Card-${ state.cards.length + 1 }`, Card, data)
 
-      if ( card ) {
+      if ( card === undefined ) return;
+
         this.state.setKey('cards', [ ...state.cards, card ])
-      }
 
-      if ( this.feedRef.value ) {
+      if ( this.feedRef.value === undefined ) return;
 
         const { scrollHeight } = this.feedRef.value;
- 
+
         this.feedRef.value.scrollTo({
           top: scrollHeight,
           behavior: 'smooth',
         });
-
-      }
 
     }
 
@@ -257,7 +269,7 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       const { x, y } = state.imageShift;
 
       return html`
-        <section class="main-container" id="${ this.constructor.name }-${ this.hash }">
+        <section class="main-container" id="${ this.elementID }">
           
           ${ this.components.get('Header')?.render() }
 
@@ -266,14 +278,18 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
             <img src="${ state.image.webp }" style="--x: ${ x.toFixed(3) }px; --y: ${ y.toFixed(3) }px;" id="mainImage">
           </picture>
           <div class="main-about" ${ ref(this.textRef) }>
-            <h1>Anime girls as point of life</h1>
-            <h5>Reputiamo ammirabile sempre viviamo oportune giudice i udita sua seguitando forse, nostro 'l cosa fosse medesimi dio seguitando della del, nel in cospetto lui oppinione e che, eterni etterno apparire giudice dallo durare apparire vostro alcun vita, transitorie pregator di.</h5>
+            <h1>${ state.text.title }</h1>
+            <h5>${ state.text.body }</h5>
           </div>
           <div id="CardContainer" 
             class="main-preview" 
             style="--s: ${ s }; --e: ${ e }"
             ${ ref(this.feedRef) }
             >
+
+            <header>
+              Новостная лента
+            </header>
 
             ${ state.cards.map((card) => card?.render()) }
 

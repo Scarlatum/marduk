@@ -1,5 +1,8 @@
-import type { TemplateResult } from 'lit-html';
-import { atom, map as nanostoresMap } from 'nanostores';
+// LIBS
+  import { TemplateResult } from 'lit-html';
+  import { atom, map as nanostoresMap } from 'nanostores';
+
+// import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 
 // TYPES
   import type { MapStore, WritableAtom  } from 'nanostores';
@@ -17,8 +20,8 @@ import { atom, map as nanostoresMap } from 'nanostores';
     hooks: Partial<ComponentHooks>
   }
 
-  interface ComponentConstructor<S, Props> {
-    new (payload: ComponentPayload<S, Props>): Component<any,Props,any>
+  interface ComponentConstructor<State, Props> {
+    new (payload: ComponentPayload<State, Props>): Component<any,Props,any>
   }
 
   export interface ComponentHooks {
@@ -48,6 +51,10 @@ import { atom, map as nanostoresMap } from 'nanostores';
 
     // MOUNT STATE
     protected readonly mounthed: WritableAtom<boolean> = atom(false);
+    protected unmountedComponents: Array<Component<any,any,any>> = new Array();
+
+    // // CONTAINER REFERENCE
+    // protected containerRef: Ref<HTMLElement> = createRef();
 
     //
     constructor(payload: ComponentPayload<State,Props>) {
@@ -62,13 +69,14 @@ import { atom, map as nanostoresMap } from 'nanostores';
 
     }
 
+    get elementID(): `${ string }-${ string }` {
+      return `${ this.constructor.name }-${ this.hash }`;
+    }
+
     //
     private hooksInit(hooks: Partial<ComponentHooks>): Partial<ComponentHooks> {
 
       this.mounthed.listen(() => { 
-
-        // Run parent mouth hook.
-        if ( hooks.onMount ) hooks.onMount()
 
         // Notify childrens about end of render cycle.
         this.notifyChildrens();
@@ -76,13 +84,15 @@ import { atom, map as nanostoresMap } from 'nanostores';
         // Fire onMount method.
         if ( this.onMount ) this.onMount();
 
-        // DEBUG
-        console.debug(`[Component mounth]: ID: ${ this.hash } | ${ this.constructor.name } was mounted `,);
+        // // DEBUG
+        // console.debug(`[Component mounth]: ID: ${ this.hash } | ${ this.constructor.name } was mounted `,);
 
       })
 
       this.state.listen(async () => { 
-        
+
+        if ( this.mounthed.get() === false ) return;
+
         // Await render.
         if ( hooks.onUpdate ) await hooks.onUpdate();
 
@@ -92,14 +102,36 @@ import { atom, map as nanostoresMap } from 'nanostores';
         // Fire OnUpdate method.
         if ( this.onUpdate ) this.onUpdate();
 
-        // DEBUG
-        console.debug(`[Component update]: ID: ${ this.hash } | ${ this.constructor.name } was updated `);
+        // // DEBUG
+        // console.debug(`[Component update]: ID: ${ this.hash } | ${ this.constructor.name } was updated `);
 
       })
 
       return hooks
 
     }
+
+    // Get element from DOM
+    protected getElement({ constructor, hash }: Component<any,any,any>) {
+      return document.getElementById(`${ constructor.name }-${ hash }`)
+    }
+
+    // Notify children components about render cycle completion.
+    protected notifyChildrens(): void {
+
+      if ( this.components.size === 0 ) return;
+
+      if ( this.unmountedComponents.length === 0 ) return;
+
+      this.unmountedComponents.forEach(comp => {
+        if ( comp.mounthed.get() === false ) {
+          comp.mounthed.set(true);
+        }
+      })
+
+      this.unmountedComponents = new Array(0);
+
+    } 
 
     //
     protected registerComponent<S,P>(alias: ComponentKeys, component: ComponentConstructor<S,P>, props?: P) {
@@ -111,26 +143,11 @@ import { atom, map as nanostoresMap } from 'nanostores';
 
       this.components.set(alias, new component(payload));
 
+      this.unmountedComponents.push(this.components.get(alias)!)
+
       return this.components.get(alias);
 
     }
-
-    protected getElement({ constructor, hash }: Component<any,any,any>): boolean {
-      return Boolean(document.getElementById(`${ constructor.name }-${ hash }`))
-    }
-
-    // Notify children components about render cycle completion.
-    protected notifyChildrens(): void {
-
-      if ( this.components.size === 0 ) return
-
-      this.components.forEach(childComponent => {
-        if ( childComponent.mounthed.get() === false && this.getElement(childComponent) ) {
-          childComponent.mounthed.set(true);
-        }
-      })
-
-    } 
 
     abstract render(props?: object): TemplateResult<1>
 

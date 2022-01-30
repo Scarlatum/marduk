@@ -64,7 +64,7 @@ export default class Header extends Component<State, Props, any> {
     `)
 
     return html`
-      <nav class="navigation-container" id="${ this.constructor.name }-${ this.hash }">
+      <nav class="navigation-container" id="${ this.elementID }">
         <span style="--logoPath: url(${ Icon })"></span>
         <div class=navigation-links>
           ${ LinkElements }

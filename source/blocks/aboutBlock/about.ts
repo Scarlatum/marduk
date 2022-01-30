@@ -1,4 +1,4 @@
-import { html, nothing } from 'lit-html';
+import { html } from 'lit-html';
 
 // STYLES
   import './styles.scss'
@@ -125,7 +125,7 @@ export default class AboutBlock extends EccheumaComponent<State,Props,Components
     const CARDS = this.state.get().cards.map(card => card.render())
 
     return html`
-      <section class="about-container" id="${ this.constructor.name }-${ this.hash }">
+      <section class="about-container" id="${ this.elementID }">
         <h1>ABOUT THIS LANDING</h1>
         <hr>
         <div class="about-tabs">
@@ -134,9 +134,10 @@ export default class AboutBlock extends EccheumaComponent<State,Props,Components
         <hr>
         <div class="about-cards">
           ${ CARDS }
-        </div>
+        </div>  
       </section>
     `
+   
   }
 
 }

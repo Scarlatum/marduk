@@ -15,12 +15,18 @@ import { html } from 'lit-html';
   // @ts-ignore
   import placeholderImageHOLD from '~/assets/images/mech.png?format=webp&w=300';
 
+  const placeholderText = `
+    Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
+    Accusamus a harum beatae ad perferendis, quo excepturi rem, vitae voluptas incidunt fugit debitis sit quae eligendi facere reiciendis at fuga unde.
+  `
+
 // INTERFACES
 
   import type { ImageStruct } from '~/types/common';
 
   export interface State {
     title: string
+    body: string
     image: {
       fullsize: ImageStruct,
       preview: string,
@@ -43,6 +49,7 @@ import { html } from 'lit-html';
 
       super({ props, hooks, state: {
         title: props?.title || 'Default title',
+        body: props?.body || placeholderText.trim(),
         image: props?.image || {
           fullsize: Card.placeholderImage,
           preview: placeholderImageHOLD,
@@ -51,8 +58,12 @@ import { html } from 'lit-html';
 
     }
 
-    setMainImage() {
-      this.store.setKey('mainImage', this.state.get().image.fullsize);
+    setMain() {
+
+      const { image, title, body } = this.state.get();
+
+      this.store.setKey('mainImage', image.fullsize);
+      this.store.setKey('mainText', { title, body })
     }
 
     onMount(): void {
@@ -79,7 +90,8 @@ import { html } from 'lit-html';
           { opacity: 0 }, 
           { opacity: 1 }
         ], {
-          duration: 750,
+          delay: 500,
+          duration: 1000,
           fill: 'both',
         })
 
@@ -93,19 +105,20 @@ import { html } from 'lit-html';
 
     render() {
 
-      const { title, image } = this.state.get();
+      const { title, body, image } = this.state.get();
 
       return html`
-        <div class="card-container" id="${ this.constructor.name }-${ this.hash }" @click=${ () => this.setMainImage() }>
-          <header class="card-header">${ title }</header>
+        <article class="card-container" id="${ this.elementID }" @click=${ () => this.setMain() }>
+          <header class="card-header">
+            ${ title }
+          </header>
           <picture class="card-picture">
             <img src="${ image.preview || placeholderImageHOLD }">
           </picture>
-          <article class="card-body">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-            Accusamus a harum beatae ad perferendis, quo excepturi rem, vitae voluptas incidunt fugit debitis sit quae eligendi facere reiciendis at fuga unde.
-          </article>
-        </div>
+          <p class="card-body">
+            ${ body }
+          </p>
+        </article>
       `
       
     }

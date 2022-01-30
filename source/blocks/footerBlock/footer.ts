@@ -25,11 +25,13 @@ import { html } from 'lit-html';
     }
 
     render() {
-      return html`
-        <footer class="footer-container" id="${ this.constructor.name }-${ this.hash }">
 
+      return html`
+        <footer class="footer-container" id="${ this.elementID }">
+          <h1>Hello from footer<h1>
         </footer>
       `
+      
     }
 
   }

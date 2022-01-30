@@ -4,7 +4,11 @@ import type { ImageStruct } from '~/types/common'
 
 declare global {
   interface store {
-    mainImage: ImageStruct
+    mainImage: ImageStruct,
+    mainText: {
+      title: string,
+      body: string,
+    }
   }
 }
 

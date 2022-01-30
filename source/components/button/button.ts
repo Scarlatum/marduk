@@ -42,7 +42,7 @@
       const props = this.props;
 
       return html`
-        <button class="${ style.button }" id="${ this.constructor.name }-${ this.hash }" @click="${ () => props?.onClick() }">
+        <button class="${ style.button }" id="${ this.elementID }" @click="${ () => props?.onClick() }">
           ${ state.title }
         </button>
       `

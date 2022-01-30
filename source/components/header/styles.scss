@@ -70,7 +70,7 @@
     transition-duration: 250ms;
 
     &[data-active="true"] {
-      color: white;
+      color: var(--font-color-main);
     }
 
     &:hover {

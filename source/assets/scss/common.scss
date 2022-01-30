@@ -1,5 +1,5 @@
 :root {
-  --color-accent-600:  hsla(30, 12.5%, 70%, 1);
+  --color-accent-700:  hsla(30, 12.5%, 70%, 1);
   --color-accent-600:  hsla(30, 12.5%, 60%, 1);
   --color-accent-500:  hsla(30, 12.5%, 50%, 1);
   --color-accent-400:  hsla(30, 12.5%, 40%, 1);
@@ -11,6 +11,8 @@
   --color-base-500-50: hsla(240, 5%, 8%, 50%);
   --color-base-500-25: hsla(240, 5%, 8%, 25%);
 
+
+  --font-color-main: white;
   --font-size-normal: 2vh;
 
 }
@@ -19,6 +21,8 @@
   box-sizing: border-box;
   font-family: 'Segoe UI';
   font-weight: 600;
+
+  color: var(--font-color-main);
 
   &::-webkit-scrollbar {
     background-color: var(--color-accent-500);
