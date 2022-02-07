@@ -11,12 +11,17 @@ import { html } from 'lit-html';
 // ASSETS
 
   // @ts-ignore
-  import placeholderImageWEBP from '~/assets/images/0.png?format=webp';
+  import placeholderImageWEBP from '~/assets/images/0.png?format=webp&w=1440';
   // @ts-ignore
-  import placeholderImageAVIF from '~/assets/images/0.png?format=avif';
+  import placeholderImageAVIF from '~/assets/images/0.png?format=avif&w=1440';
   // @ts-ignore
   import placeholderImageHOLD from '~/assets/images/0.png?format=webp&w=300';
 
+// SVG
+  //@ts-ignore
+  import LinkIcon from '~/assets/svg/arrow-up-right-from-square-solid.svg?raw'
+
+// TEXT
   const placeholderText = `
     Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
     Accusamus a harum beatae ad perferendis, quo excepturi rem, vitae voluptas incidunt fugit debitis sit quae eligendi facere reiciendis at fuga unde.
@@ -66,7 +71,8 @@ import { html } from 'lit-html';
         title: String('See full article'), 
         onClick() {
           console.log('click on button')
-        }
+        },
+        icon: LinkIcon
       })
 
       this.rotateStyle  = `${ this.getRandomAngle() }deg`;
@@ -74,15 +80,16 @@ import { html } from 'lit-html';
 
     }
 
-    setMain() {
+    private setMain() {
 
       const { image, title, body } = this.state.get();
 
       this.store.setKey('mainImage', image.fullsize);
-      this.store.setKey('mainText', { title, body })
+      this.store.setKey('mainText', { title, body });
+
     }
 
-    onMount(): void {
+    protected onMount(): void {
 
       const cardElement = document.getElementById(this.elementID);
 
@@ -96,10 +103,10 @@ import { html } from 'lit-html';
 
     }
 
-    onUpdate() {
+    protected onUpdate() {
     }
 
-    animateCard(element: Element, dir: boolean) {
+    private animateCard(element: Element, dir: boolean) {
 
       if ( element ) {
         const animation = element.animate([
@@ -119,11 +126,11 @@ import { html } from 'lit-html';
 
     }
 
-    getRandomAngle() {
+    private getRandomAngle() {
       return Math.trunc(360 * Math.random())
     }
 
-    getRandomSize() {
+    private getRandomSize() {
       return parseFloat((1 + (1 * Math.random())).toPrecision(3))
     }
 

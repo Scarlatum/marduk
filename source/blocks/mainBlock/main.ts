@@ -1,5 +1,6 @@
 import { html } from 'lit-html';
 import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg.js'
 
 // COMPONENT CLASS
   import EccheumaComponent, { ComponentPayload } from '~/component'
@@ -25,6 +26,11 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
   import part2   from '~/assets/images/2.png?w=1440;300&format=webp;avif';
   // @ts-ignore
   import part3   from '~/assets/images/3.png?w=1440;300&format=webp;avif';
+
+//@ts-ignore
+  import facebookIcon from '~/assets/svg/facebook-brands.svg?raw';
+  import tweeterIcon from '~/assets/svg/twitter-brands.svg?raw';
+  import pinterestIcon from '~/assets/svg/pinterest-brands.svg?raw';
 
 // CARD DATA 
   const CARD_DATA: Array<CardProps> = [
@@ -59,6 +65,8 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
   type ImageTransform = { x: number, y: number };
   type MaskParams     = { e: number, s: number };
 
+  type Link = { title: string, rawSVG: string } 
+
   export interface State {
     imageShift: ImageTransform
     maskParams: MaskParams
@@ -76,6 +84,12 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 
 // MODULE
   export default class MainBlock extends EccheumaComponent<State, Props, ComponentsKeys> {
+
+    private static links: Array<Link> = [
+      { title: 'Facebook', rawSVG: facebookIcon }, 
+      { title: 'Tweeter', rawSVG: tweeterIcon },
+      { title: 'Pinterest', rawSVG: pinterestIcon }
+    ]  
 
     private static staticState: State = { 
       imageShift: { x: 0, y: 0 }, 
@@ -255,6 +269,10 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       const { s, e } = state.maskParams;
       const { x, y } = state.imageShift;
 
+      const LINKS = MainBlock.links.map(link => html`
+        <span>${ link.title } ${ unsafeSVG(link.rawSVG) }</span>
+      `)
+
       return html`
         <section class="main-container" id="${ this.elementID }">
           
@@ -284,7 +302,7 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 
           </div>
           <div class="main-footer">
-            ${ Array(3).fill(true).map(() => html`<span>something</span>`) }
+            ${ LINKS }
           </div>
         </section>
       `

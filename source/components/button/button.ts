@@ -1,5 +1,6 @@
 // LIT HTML
   import { html } from 'lit-html';
+  import { unsafeSVG } from 'lit-html/directives/unsafe-svg.js'
 
 // COMPONENT
   import Component, { ComponentPayload } from '~/component';
@@ -15,6 +16,7 @@
 
   export interface Props extends Partial<State> {
     onClick(): any
+    icon: string
   }
 
 // MODULE
@@ -41,9 +43,12 @@
       const state = this.state?.get();
       const props = this.props;
 
+      const onClick = props?.onClick;
+
       return html`
-        <button class="${ style.button }" id="${ this.elementID }" @click="${ () => props?.onClick() }">
+        <button class="${ style.button }" id="${ this.elementID }" @click="${ () => { onClick ? onClick() : null } }">
           ${ state.title }
+          ${ unsafeSVG(props?.icon) }
         </button>
       `
 

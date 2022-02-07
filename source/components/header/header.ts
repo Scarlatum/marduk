@@ -1,4 +1,5 @@
-import { html } from 'lit-html';
+import { html, nothing } from 'lit-html';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg.js'
 
 // Application Components
   import Component, { ComponentPayload } from '~/component';
@@ -8,10 +9,17 @@ import { html } from 'lit-html';
 
 // ASSETS
   // @ts-ignore
-  import Icon  from '~/assets/images/ic_launcher.png';
+  import Icon  from '~/assets/images/spider-web-red.svg';
+
+// SVG
+  //@ts-ignore
+  import homeIcon from '~/assets/svg/house-solid.svg?raw';
+  import bookIcon from '~/assets/svg/book-open-solid.svg?raw';
+  import infoIcon from '~/assets/svg/circle-info-solid.svg?raw';
+  import yenIcon  from '~/assets/svg/yen-sign-solid.svg?raw';
 
 // TYPES
-  type HeaderLink = { link: string, title: string };
+  type HeaderLink = { link: string, title: string, rawSVG?: string };
 
 // INTERFACES
   interface State {
@@ -25,10 +33,10 @@ import { html } from 'lit-html';
 export default class Header extends Component<State, Props, any> {
 
   private static NAVIGATION_LINKS: Array<HeaderLink> = [
-    { link: './', title: 'Home' },
-    { link: './', title: 'Chapters' },
-    { link: './', title: 'Prices' },
-    { link: './', title: 'Abouts Us' },
+    { link: './', title: 'Home', rawSVG: homeIcon },
+    { link: './', title: 'Chapters', rawSVG: bookIcon },
+    { link: './', title: 'Prices', rawSVG: yenIcon },
+    { link: './', title: 'Abouts Us', rawSVG: infoIcon },
   ];
 
   constructor({ props, hooks }: ComponentPayload<State, Props>) { 
@@ -59,13 +67,16 @@ export default class Header extends Component<State, Props, any> {
       <span 
         data-active="${ ref.title === curentTab }" 
         @click="${ () => this.state.setKey('curentTab', ref.title) }">
+        ${ ref.rawSVG ? unsafeSVG(ref.rawSVG) : nothing }
         ${ ref.title }
       </span>
     `)
 
     return html`
       <nav class="navigation-container web-pattern" id="${ this.elementID }">
-        <span style="--logoPath: url(${ Icon })"></span>
+        <span style="--logoPath: url(${ Icon })">
+          Kumo to Shoujo
+        </span>
         <div class=navigation-links>
           ${ LinkElements }
         </div>

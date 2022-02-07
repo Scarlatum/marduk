@@ -1,6 +1,12 @@
 .button {
 	
 	cursor: pointer;
+	
+	display: flex;
+	gap: .5vw;
+
+	justify-content: center;
+	align-items: baseline;
 
 	margin: auto;
 
@@ -18,6 +24,11 @@
 
 	&:hover {
 		width: calc(100% - 40px);
+	}
+
+	svg {
+		height: 1.5vh;
+		aspect-ratio: 1/1;
 	}
 
 }

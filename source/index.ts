@@ -1,5 +1,11 @@
 import { html, render as LitRender } from 'lit-html';
 
+// CRUSORIS
+  import Crusoris from '@eccheuma/crusoris';
+  import '@eccheuma/crusoris/styles/index.css';
+
+  new Crusoris(document.body).init();
+
 // COMPONENT
   import Component, { RenderFunction, ComponentHooks } from '~/component';
 
@@ -41,14 +47,14 @@ import { html, render as LitRender } from 'lit-html';
         this.mounthed.set(true); mutObserver.disconnect();
       })
 
-      mutObserver.observe(document.body, { childList: true });
+      mutObserver.observe(document.body, { childList: true, attributes: false, subtree: false });
 
       Instance.updateRoot();
 
     }
 
-    onMount() {
-      console.log(document.getElementById(this.elementID),'onMount');
+    async onMount() {
+      
     } 
 
     onUpdate() {

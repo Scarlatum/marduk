@@ -9,7 +9,7 @@
   display: grid;
   justify-content: space-evenly;
   align-items: center;
-  grid-template: 1fr / 1fr 2fr;
+  grid-template: 1fr / auto 1fr;
   gap: 0px 2vw;
 
   background-color: var(--color-base-500);
@@ -17,13 +17,16 @@
 
   position: sticky; top: 0; z-index: 1000;
 
-  span {
-    height: 5vh;
-    width: 120px;
+  > span {
+    height: 8vh;
+    width: max-content;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     background-image: var(--logoPath);
+    line-height: 8vh;
+    text-shadow: 0px 0px 10px black;
+    text-transform: uppercase;
   }
 
   button {
@@ -59,9 +62,15 @@
 
     cursor: pointer;
 
+    display: flex;
+    align-items: baseline;
+    gap: 0 .75vw;
+
+    min-width: 6vw;
+
     padding: 1vh 1vw;
     text-decoration: none;
-    color: rgb(60,60,60);
+    color: var(--color-base-800);
 
     font-size: var(--font-size-normal);
     text-align: center;
@@ -70,10 +79,21 @@
 
     &[data-active="true"] {
       color: var(--font-color-main);
+      path {
+        fill: var(--color-accent-300);
+      }
     }
 
     &:hover {
       transform: translateY(-1vh);
+    }
+
+    svg {
+      height: 1.5vh;
+    }
+
+    path {
+      fill: var(--color-base-800);
     }
 
   }

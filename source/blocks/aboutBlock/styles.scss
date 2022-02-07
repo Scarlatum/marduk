@@ -2,7 +2,7 @@
 
 	&-container {
 
-		padding: 5vh 5vw;
+		padding: 2vh 5vw 10vh;
 		display: grid;
 		gap: 2vh 0;
 
@@ -10,11 +10,20 @@
 
 		header {
 			h1 {
-				color: white;
+				color: var(--font-color-main);
 				display: block;
 				text-align: center;
 				font-size: 5vh;
 				margin: 2vh;
+
+				letter-spacing: .75ch;
+
+				text-shadow: 
+					0px 1px 0px var(--color-accent-600),
+					0px 2px 0px var(--color-accent-500),
+					0px 3px 0px var(--color-accent-400),
+					0px 4px 0px var(--color-accent-300);
+
 			}
 			p {
 				text-align: center;

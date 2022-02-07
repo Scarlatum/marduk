@@ -27,7 +27,7 @@ import { html } from 'lit-html';
     render() {
 
       return html`
-        <footer class="footer-container" id="${ this.elementID }">
+        <footer class="footer-container web-pattern" id="${ this.elementID }">
           <h1>Is not the end</h1>
         </footer>
       `

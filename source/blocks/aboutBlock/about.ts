@@ -163,7 +163,7 @@ export default class AboutBlock extends EccheumaComponent<State,Props,Components
     return html`
       <section class="about-container" id="${ this.elementID }">
         <header>
-          <h1>CHAPTERS</h1>
+          <h1>RELEASED CHAPTERS</h1>
           <p>
             Lorem ipsum qui ea fugiat aliquip sit sit dolor in enim minim voluptate reprehenderit sunt veniam deserunt amet adipisicing fugiat esse ullamco ad tempor laboris sunt aute culpa.
           <p>          

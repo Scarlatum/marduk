@@ -17,10 +17,13 @@
   --color-base-400:    hsla(240, 15%, 6%, 100%);
 
 
-  --font-color-main: white;
+  --font-color-main: hsla(0deg, 0%, 90%, 100%);
   --font-size-normal: 2vh;
 
   --border-size: 3px;
+
+  --crusoris-dot-color: var(--color-accent-500);
+  --crusoris-circle-color: var(--color-accent-300);
 
 }
 
@@ -32,11 +35,11 @@
   color: var(--font-color-main);
 
   &::-webkit-scrollbar {
-    background-color: var(--color-accent-500);
+    background-color: var(--color-accent-200);
     width: .75vw;
     border: .33vw solid var(--color-base-500);
     &-thumb {
-      background-color: var(--color-accent-500);
+      background-color: var(--color-accent-300);
       border: 2px solid var(--color-base-500);;
       border-radius: 4px;
     }
@@ -70,7 +73,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
 
-    // transform: rotate(var(--r, 0deg)) scale(var(--s, 1));
+    transform: rotate(var(--r, 0deg)) scale(var(--s, 1));
 
     opacity: .03;
 

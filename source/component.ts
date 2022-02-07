@@ -18,7 +18,7 @@
 // INTERFACES
   export interface ComponentPayload<State,Props> {
     state?: State
-    props?: Props 
+    props?: Partial<Props>
     hooks: Partial<ComponentHooks>
   }
 
@@ -49,7 +49,7 @@
 
     // PROPS'N'HOOKS
     protected readonly hooks: Partial<ComponentHooks>;
-    protected readonly props?: Props;
+    protected readonly props?: Partial<Props>;
 
     // MOUNT STATE
     protected readonly mounthed: WritableAtom<boolean> = atom(false);
@@ -139,7 +139,7 @@
     } 
 
     //
-    protected registerComponent<State,Props>(alias: ComponentKeys, component: ComponentConstructor<State,Props>, props?: Props) {
+    protected registerComponent<State,Props>(alias: ComponentKeys, component: ComponentConstructor<State,Props>, props?: Partial<Props>) {
 
       const payload: ComponentPayload<State,Props> = {
         state: undefined,
