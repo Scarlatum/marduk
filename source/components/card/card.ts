@@ -132,24 +132,26 @@ import { html } from 'lit-html';
       const { title, body, image } = this.state.get();
 
       return html`
-        <article 
-          class="card-container web-pattern" 
-          id="${ this.elementID }" 
-          style="--r: ${ this.rotateStyle }; --s: ${ this.scaleStyle }" 
-          @click="${ () => this.setMain() }"
-          >
-          <header class="card-header">
-            <h3>${ title }<h3>
-            <h4>Kumo to Shoujo to Ryouki Satsujin<h4>
-          </header>
-          <picture class="card-picture">
-            <img src="${ image.preview || placeholderImageHOLD }">
-          </picture>
-          <p class="card-body">
-            ${ body }
-          </p>
-          ${ this.components.get('Button')?.render() }
-        </article>
+        <div class="card-wrapper">
+          <article 
+            class="card-container web-pattern" 
+            id="${ this.elementID }" 
+            style="--r: ${ this.rotateStyle }; --s: ${ this.scaleStyle }" 
+            @click="${ () => this.setMain() }"
+            >
+            <header class="card-header">
+              <h3>${ title }<h3>
+              <h4>Kumo to Shoujo to Ryouki Satsujin<h4>
+            </header>
+            <picture class="card-picture">
+              <img src="${ image.preview || placeholderImageHOLD }">
+            </picture>
+            <p class="card-body">
+              ${ body }
+            </p>
+            ${ this.components.get('Button')?.render() }
+          </article>
+        </div>
       `
       
     }

@@ -54,6 +54,7 @@ body {
 .web-pattern {
   position: relative;
   overflow: hidden;
+  z-index: 0;
   &::after {
 
     content: '';
@@ -69,7 +70,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
 
-    transform: rotate(var(--r, 0deg)) scale(var(--s, 1));
+    // transform: rotate(var(--r, 0deg)) scale(var(--s, 1));
 
     opacity: .03;
 

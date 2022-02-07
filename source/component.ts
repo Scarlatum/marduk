@@ -151,7 +151,7 @@
 
       this.unmountedComponents.push(this.components.get(alias)!)
 
-      return (this.components.get(alias) as Component<State,Props,null>)
+      return (this.components.get(alias) as Component<State,Props,any>)
 
     }
 

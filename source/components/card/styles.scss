@@ -1,20 +1,24 @@
 .card {
+	&-wrapper {
+		background: var(--color-base-600);
+		border-radius: .7rem;
+		overflow: hidden;
+		border: var(--border-size, 1px) solid var(--color-accent-200);
+		height: min-content;
+	}
 	&-container {
 
-		// --fall-color: var(--color-base-500-50);
-
-		opacity: 0;
+		opacity: 1;
 
 		cursor: pointer;
 
 		position: relative;
 		overflow: hidden;
-
-		height: min-content;
+		
 		background: var(--color-base-500);
-		border: var(--border-size, 1px) solid var(--color-accent-200);
-		border-radius: .7rem;
-		padding: 2vh 2vw; gap: 2vh;
+
+		padding: 2vh clamp(20px, 10%, 2vw); 
+		gap: 2vh;
 
 		display: grid;
 		grid-template-rows: auto minmax(15vh, max-content) 1fr;
@@ -24,13 +28,13 @@
 			display: grid;
 			gap: .25vh;
 			h3 {
-				font-size: 2.5vh;
+				font-size: clamp(21px, 1rem, 2.5vw);
 				font-weight: 700;
 				text-align: center;
 				margin: 0;
 			}
 			h4 {
-				font-size: 1.5vh;
+				font-size: clamp(12px, 1rem, 1.5vw);
 				font-weight: 400;
 				text-align: center;
 				opacity: .25;
@@ -49,7 +53,13 @@
 			object-fit: cover;
 			filter: drop-shadow(0px 0px 10px rgba(0,0,0, .25));
 			border-radius: .7rem;
-			border: var(--border-size) solid var(--color-base-700)
+			border: var(--border-size) solid var(--color-base-700);
+
+			@media (min-width: 720px) {
+				filter: grayscale(50%);
+				transition-duration: 500ms;
+			}
+
 		}
 
 		p {
@@ -62,6 +72,14 @@
 			-webkit-box-orient: vertical;
 			overflow: hidden;
 
+		}
+
+		@media (min-width: 720px) {
+			&:hover {
+				img {
+					filter: grayscale(0%);
+				}
+			}
 		}
 
 	}
