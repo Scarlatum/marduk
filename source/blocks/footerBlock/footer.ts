@@ -28,7 +28,7 @@ import { html } from 'lit-html';
 
       return html`
         <footer class="footer-container" id="${ this.elementID }">
-          <h1>Hello from footer<h1>
+          <h1>Is not the end</h1>
         </footer>
       `
       

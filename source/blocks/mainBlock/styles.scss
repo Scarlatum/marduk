@@ -57,16 +57,22 @@
 
     h1 {
       margin: 0;
-      width: 25ch;
-      font-size: 6vh;
+      // width: 40ch;
+      font-size: 4.5vh;
       opacity: 0;
     }
 
     h5 {
       margin: 0;
       width: 45ch;
-      font-size: 3vh;
+      font-size: 2.5vh;
+      font-weight: 400;
+      line-height: 3vh;
       opacity: 0;
+      -webkit-line-clamp: 6;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
   }
   &-preview {
@@ -88,14 +94,16 @@
 
     > header {
 
+      pointer-events: none;
+
       font-size: 2.5vh;
       text-align: center;
 
       padding: 2vh 0;
       width: 100%;
 
-      background: var(--color-accent-500);
-      color: black;
+      background: var(--color-accent-300);
+      color: var(--font-color-main);
 
       border-radius: .7rem;
 
@@ -110,10 +118,13 @@
     align-items: center;
 
     background-color: var(--color-base-500);
-    border-top: 1px solid var(--color-accent-500);
+    border-top: var(--border-size) solid var(--color-accent-200);
 
     span {
       font-size: var(--font-size-normal);
     }
+
+    filter: drop-shadow(0px 0px 10px rgba(0,0,0,.5));
+
   }
 }

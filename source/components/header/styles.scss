@@ -13,8 +13,7 @@
   gap: 0px 2vw;
 
   background-color: var(--color-base-500);
-  border-bottom: 1px solid var(--color-accent-500);
-  backdrop-filter: blur(10px);
+  border-bottom: var(--border-size) solid var(--color-accent-200);
 
   position: sticky; top: 0; z-index: 1000;
 

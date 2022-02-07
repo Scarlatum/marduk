@@ -1,19 +1,26 @@
 :root {
-  --color-accent-700:  hsla(30, 12.5%, 70%, 1);
-  --color-accent-600:  hsla(30, 12.5%, 60%, 1);
-  --color-accent-500:  hsla(30, 12.5%, 50%, 1);
-  --color-accent-400:  hsla(30, 12.5%, 40%, 1);
-  --color-accent-300:  hsla(30, 12.5%, 30%, 1);
-  --color-accent-200:  hsla(30, 12.5%, 20%, 1);
+  --color-accent-700:  hsla(357deg, 75%, 70%, 1);
+  --color-accent-600:  hsla(357deg, 75%, 60%, 1);
+  --color-accent-500:  hsla(357deg, 75%, 50%, 1);
+  --color-accent-400:  hsla(357deg, 75%, 40%, 1);
+  --color-accent-300:  hsla(357deg, 75%, 30%, 1);
+  --color-accent-200:  hsla(357deg, 75%, 20%, 1);
 
-  --color-base-500:    hsla(240, 5%, 8%, 100%);
-  --color-base-500-75: hsla(240, 5%, 8%, 75%);
-  --color-base-500-50: hsla(240, 5%, 8%, 50%);
-  --color-base-500-25: hsla(240, 5%, 8%, 25%);
+  --color-base-800:    hsla(240,  5%, 20%, 100%);
+  --color-base-700:    hsla(240, 10%, 15%, 100%);
+  --color-base-600:    hsla(240, 12%, 12%, 100%);
+  --color-base-500:    hsla(240, 15%,  8%, 100%);
+  --color-base-500-75: hsla(240, 15%,  8%,  75%);
+  --color-base-500-50: hsla(240, 15%,  8%,  50%);
+  --color-base-500-25: hsla(240, 15%,  8%,  25%);
+
+  --color-base-400:    hsla(240, 15%, 6%, 100%);
 
 
   --font-color-main: white;
   --font-size-normal: 2vh;
+
+  --border-size: 3px;
 
 }
 
@@ -42,5 +49,32 @@ body {
   padding: 0;
   height: 210vh;
   background-color: var(--color-base-500);
+}
+
+.web-pattern {
+  position: relative;
+  overflow: hidden;
+  &::after {
+
+    content: '';
+    width: 200%;
+    height: 200%;
+
+    position: absolute;
+    top: -50%;
+    left: -50%;
+
+    background-image: url(~/assets/images/spider-web.svg);
+    background-size: 200%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    transform: rotate(var(--r, 0deg)) scale(var(--s, 1));
+
+    opacity: .03;
+
+    z-index: -1;
+
+  }
 }
 

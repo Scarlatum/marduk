@@ -3,17 +3,19 @@ import { html } from 'lit-html';
 // COMPONENT
   import Component, { ComponentPayload } from '~/component';
 
+  import Button from '~/components/button/button';
+
 // STYLES
   import './styles.scss'
 
 // ASSETS
 
   // @ts-ignore
-  import placeholderImageWEBP from '~/assets/images/mech.png?format=webp';
+  import placeholderImageWEBP from '~/assets/images/0.png?format=webp';
   // @ts-ignore
-  import placeholderImageAVIF from '~/assets/images/mech.png?format=avif';
+  import placeholderImageAVIF from '~/assets/images/0.png?format=avif';
   // @ts-ignore
-  import placeholderImageHOLD from '~/assets/images/mech.png?format=webp&w=300';
+  import placeholderImageHOLD from '~/assets/images/0.png?format=webp&w=300';
 
   const placeholderText = `
     Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
@@ -38,12 +40,15 @@ import { html } from 'lit-html';
   }
 
 // MODULE
-  export default class Card extends Component<State, Props, any> {
+  export default class Card extends Component<State, Props, 'Button'> {
 
     static placeholderImage: ImageStruct = {
       webp: placeholderImageWEBP,
       avif: placeholderImageAVIF,
     }
+
+    private rotateStyle: string;
+    private scaleStyle: string;
 
     constructor({ props, hooks }: ComponentPayload<State, Props>) {
 
@@ -55,6 +60,17 @@ import { html } from 'lit-html';
           preview: placeholderImageHOLD,
         }
       }});
+
+
+      this.registerComponent('Button', Button, { 
+        title: String('See full article'), 
+        onClick() {
+          console.log('click on button')
+        }
+      })
+
+      this.rotateStyle  = `${ this.getRandomAngle() }deg`;
+      this.scaleStyle   = `${ this.getRandomSize() }`;
 
     }
 
@@ -68,7 +84,7 @@ import { html } from 'lit-html';
 
     onMount(): void {
 
-      const cardElement = document.getElementById(`${ this.constructor.name }-${ this.hash }`);
+      const cardElement = document.getElementById(this.elementID);
 
       if ( cardElement === null ) return;
 
@@ -103,14 +119,28 @@ import { html } from 'lit-html';
 
     }
 
+    getRandomAngle() {
+      return Math.trunc(360 * Math.random())
+    }
+
+    getRandomSize() {
+      return parseFloat((1 + (1 * Math.random())).toPrecision(3))
+    }
+
     render() {
 
       const { title, body, image } = this.state.get();
 
       return html`
-        <article class="card-container" id="${ this.elementID }" @click=${ () => this.setMain() }>
+        <article 
+          class="card-container web-pattern" 
+          id="${ this.elementID }" 
+          style="--r: ${ this.rotateStyle }; --s: ${ this.scaleStyle }" 
+          @click="${ () => this.setMain() }"
+          >
           <header class="card-header">
-            ${ title }
+            <h3>${ title }<h3>
+            <h4>Kumo to Shoujo to Ryouki Satsujin<h4>
           </header>
           <picture class="card-picture">
             <img src="${ image.preview || placeholderImageHOLD }">
@@ -118,6 +148,7 @@ import { html } from 'lit-html';
           <p class="card-body">
             ${ body }
           </p>
+          ${ this.components.get('Button')?.render() }
         </article>
       `
       

@@ -18,15 +18,13 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 // IMAGE
 
   // @ts-ignore
-  import motsar1    from '~/assets/images/motsar-1.jpg?w=1440;300&format=webp;avif';
+  import part0   from '~/assets/images/0.png?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import motsar2    from '~/assets/images/motsar-2.jpg?w=1440;300&format=webp;avif';
+  import part1   from '~/assets/images/1.png?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import shipImage  from '~/assets/images/ship.png?w=1440;300&format=webp;avif';
+  import part2   from '~/assets/images/2.png?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import mechImage  from '~/assets/images/mech.png?w=1440;300&format=webp;avif';
-  // @ts-ignore
-  import akImage    from '~/assets/images/ak.jpg?w=1440;300&format=webp;avif';
+  import part3   from '~/assets/images/3.png?w=1440;300&format=webp;avif';
 
 // CARD DATA 
   const CARD_DATA: Array<CardProps> = [
@@ -35,10 +33,10 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       body: 'In sunt minim deserunt in mollit ullamco ut laboris ut id nisi officia sunt nisi occaecat. Eu proident est consequat ad elit cupidatat elit do aliqua in amet in veniam elit in laboris anim anim officia in incididunt sunt velit.',
       image: {
         fullsize: {
-          webp: motsar1[0],
-          avif: motsar1[1],
+          webp: part0[0],
+          avif: part0[1],
         },
-        preview: motsar1[2],
+        preview: part0[2],
       }
     },
     {
@@ -46,21 +44,10 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       body: 'Fugiat occaecat laborum nisi elit velit officia ut amet nisi ad minim do reprehenderit in eu minim eiusmod ea adipisicing ea cillum ut cillum excepteur irure commodo quis laboris amet voluptate cupidatat aliquip cupidatat deserunt cillum dolore ullamco consectetur ad anim sit eiusmod voluptate reprehenderit sint aliqua ad incididunt anim eu deserunt ex qui cillum esse eu adipisicing excepteur voluptate laboris aliquip commodo non adipisicing in labore veniam dolore in esse adipisicing consectetur irure reprehenderit esse officia in sit et consequat proident adipisicing ullamco minim laboris irure non fugiat nulla veniam dolore commodo dolor dolore ea commodo velit ea fugiat id do elit sunt incididunt ea ut cillum elit ad velit consequat incididunt occaecat adipisicing deserunt aute sit duis pariatur in labore cillum nulla duis sed ut incididunt duis in ea eu culpa dolore nulla irure laboris amet ut non qui sit nulla laborum.',
       image: {
         fullsize: {
-          webp: motsar2[0],
-          avif: motsar2[1],
+          webp: part1[0],
+          avif: part1[1],
         },
-        preview: motsar2[2],
-      }
-    },
-    {
-      title: 'Azurlane as meaning of life',
-      body: 'Excepteur nisi qui excepteur non consequat amet sit nulla duis et officia excepteur ut nisi magna anim in nulla commodo id laboris velit ex pariatur reprehenderit elit deserunt officia officia veniam irure et fugiat irure amet esse in pariatur.',
-      image: {
-        fullsize: {
-          webp: shipImage[0],
-          avif: shipImage[1],
-        },
-        preview: shipImage[2],
+        preview: part1[2],
       }
     },
   ]
@@ -94,8 +81,8 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       imageShift: { x: 0, y: 0 }, 
       maskParams: { e: 0, s: 0 }, 
       image: {
-        webp: motsar1[0],
-        avif: motsar1[1],
+        webp: part0[0],
+        avif: part0[1],
       },
       text: {
         title: 'TEST',
@@ -128,7 +115,7 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
       });
 
       this.registerComponent('FeedButton', Button, { 
-        title: 'FeedButton',
+        title: 'Load more',
         onClick: () => {
           this.pushNewCard(this.state.get())
         }
@@ -140,7 +127,7 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
 
       new IntersectionObserver((entry) => {
         this.inViewPort = entry[0].isIntersecting;
-      }, { rootMargin: '-1px' }).observe(document.getElementById(`${ this.constructor.name }-${ this.hash }`)!);
+      }, { rootMargin: '-1px' }).observe(document.getElementById(this.elementID)!);
 
       // ---------- 
       window.addEventListener('mousemove', ({ x, y,  }) => {
@@ -237,10 +224,10 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
         body: 'Lorem ipsum do aute id sit aliqua irure cillum mollit laborum laborum amet exercitation dolor dolore incididunt elit  sit adipisicing elit laboris eiusmod qui pariatur fugiat mollit sit est sit fugiat officia culpa adipisicing amet sit sed occaecat ex est magna ullamco reprehenderit laboris fugiat cupidatat ut mollit dolor commodo excepteur sunt deserunt cillum ullamco laboris sit nostrud id nisi velit duis cillum esse nisi pariatur veniam dolor ex in quis in dolor eu anim voluptate dolore consequat et consectetur ut reprehenderit ea commodo in id reprehenderit anim eiusmod cillum adipisicing duis id mollit culpa sed adipisicing enim ullamco dolore do minim do anim dolore sunt cupidatat ut laboris ut amet ad quis quis fugiat laboris dolore mollit in ut cillum cupidatat labore.',
         image: {
           fullsize: {
-            webp: akImage[0],
-            avif: akImage[1],
+            webp: part3[0],
+            avif: part3[1],
           },
-          preview: akImage[2],
+          preview: part3[2],
         }
       }
 
@@ -288,7 +275,7 @@ import { ref, createRef, Ref } from 'lit-html/directives/ref.js';
             >
 
             <header>
-              Новостная лента
+              Last released chapters
             </header>
 
             ${ state.cards.map((card) => card?.render()) }

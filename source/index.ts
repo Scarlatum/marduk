@@ -37,12 +37,18 @@ import { html, render as LitRender } from 'lit-html';
       this.registerComponent('AboutBlock', AboutBlock);
       this.registerComponent('FooterBlock', FooterBlock);
 
-      Instance.updateRoot().then(() => this.mounthed.set(true));
+      const mutObserver = new MutationObserver(() => {
+        this.mounthed.set(true); mutObserver.disconnect();
+      })
+
+      mutObserver.observe(document.body, { childList: true });
+
+      Instance.updateRoot();
 
     }
 
     onMount() {
-      
+      console.log(document.getElementById(this.elementID),'onMount');
     } 
 
     onUpdate() {
@@ -59,9 +65,11 @@ import { html, render as LitRender } from 'lit-html';
     }
 
     static updateRoot(): Promise<void> {
+
       return new Promise((res) => {
         LitRender(Instance.update(), document.body, {  }); res()
       })
+
     }
 
   }

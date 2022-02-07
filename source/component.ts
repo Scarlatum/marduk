@@ -21,7 +21,7 @@
   }
 
   interface ComponentConstructor<State, Props> {
-    new (payload: ComponentPayload<State, Props>): Component<any,Props,any>
+    new (payload: ComponentPayload<State, Props>): Component<State,Props,any>
   }
 
   export interface ComponentHooks {
@@ -36,11 +36,11 @@
   export default abstract class Component<State, Props, ComponentKeys> {
 
     // COMPONENT HASH ID
-    protected readonly hash: string = Math.random().toString(36).slice(-6).toUpperCase();
+    protected readonly id: string = Math.random().toString(36).slice(-6).toUpperCase();
 
     // STATE OF COMPONENT AND GLOBAL STATE
-    protected readonly store = globalStore('global');
-    protected readonly state: MapStore<State>;
+    public readonly store = globalStore('global');
+    public readonly state: MapStore<State>;
 
     // CHILD COMPONENTS
     protected readonly components: Map<ComponentKeys, Component<any,any,any>> = new Map();
@@ -70,7 +70,7 @@
     }
 
     get elementID(): `${ string }-${ string }` {
-      return `${ this.constructor.name }-${ this.hash }`;
+      return `${ this.constructor.name }-${ this.id }`;
     }
 
     //
@@ -81,11 +81,14 @@
         // Notify childrens about end of render cycle.
         this.notifyChildrens();
 
+        // 
+        if ( this.hooks.onMount ) this.hooks.onMount();
+
         // Fire onMount method.
         if ( this.onMount ) this.onMount();
 
         // // DEBUG
-        // console.debug(`[Component mounth]: ID: ${ this.hash } | ${ this.constructor.name } was mounted `,);
+        // console.debug(`[Component mounth]: ID: ${ this.id } | ${ this.constructor.name } was mounted `);
 
       })
 
@@ -103,7 +106,7 @@
         if ( this.onUpdate ) this.onUpdate();
 
         // // DEBUG
-        // console.debug(`[Component update]: ID: ${ this.hash } | ${ this.constructor.name } was updated `);
+        // console.debug(`[Component update]: ID: ${ this.id } | ${ this.constructor.name } was updated `);
 
       })
 
@@ -112,8 +115,8 @@
     }
 
     // Get element from DOM
-    protected getElement({ constructor, hash }: Component<any,any,any>) {
-      return document.getElementById(`${ constructor.name }-${ hash }`)
+    protected getElement({ constructor, id }: Component<any,any,any>) {
+      return document.getElementById(`${ constructor.name }-${ id }`)
     }
 
     // Notify children components about render cycle completion.
@@ -134,9 +137,10 @@
     } 
 
     //
-    protected registerComponent<S,P>(alias: ComponentKeys, component: ComponentConstructor<S,P>, props?: P) {
+    protected registerComponent<State,Props>(alias: ComponentKeys, component: ComponentConstructor<State,Props>, props?: Props) {
 
-      const payload: ComponentPayload<S,P> = {
+      const payload: ComponentPayload<State,Props> = {
+        state: undefined,
         props: props,
         hooks: this.hooks
       }
@@ -145,7 +149,7 @@
 
       this.unmountedComponents.push(this.components.get(alias)!)
 
-      return this.components.get(alias);
+      return (this.components.get(alias) as Component<State,Props,null>)
 
     }
 

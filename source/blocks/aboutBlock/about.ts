@@ -5,11 +5,17 @@ import { html } from 'lit-html';
 
 // ASSETS
   // @ts-ignore
-  import mechImage  from '~/assets/images/mech.png?w=1440;300&format=webp;avif';
+  import part0   from '~/assets/images/2.png?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import akImage    from '~/assets/images/ak.jpg?w=1440;300&format=webp;avif';
+  import part1   from '~/assets/images/1.png?w=1440;300&format=webp;avif';
   // @ts-ignore
-  import motsar2    from '~/assets/images/motsar-2.jpg?w=1440;300&format=webp;avif';
+  import part2   from '~/assets/images/0.png?w=1440;300&format=webp;avif';
+  // @ts-ignore
+  import part3   from '~/assets/images/3.png?w=1440;300&format=webp;avif';
+  // @ts-ignore
+  import part4   from '~/assets/images/4.png?w=1440;300&format=webp;avif';
+  // @ts-ignore
+  import part5   from '~/assets/images/5.png?w=1440;300&format=webp;avif';
 
 // COMPONENT CLASS
   import EccheumaComponent, { ComponentPayload } from '~/component'
@@ -38,38 +44,68 @@ export default class AboutBlock extends EccheumaComponent<State,Props,Components
 
   private static CARD_DATA: Array<CardProps> = [
     {
-      title: 'Test title FOR GOD OF MACHINE',
+      title: String('Title about manga'),
       image: {
         fullsize: {
-          webp: mechImage[0],
-          avif: mechImage[1],
+          webp: part0[0],
+          avif: part0[1],
         },
-        preview: mechImage[2]
+        preview: part0[2]
       }
     },
     {
-      title: 'Test title for me',
+      title: String('Title about manga'),
       image: {
         fullsize: {
-          webp: akImage[0],
-          avif: akImage[1],
+          webp: part1[0],
+          avif: part1[1],
         },
-        preview: akImage[2],
+        preview: part1[2],
       }
     },
     {
-      title: 'Test title for me',
+      title: String('Title about manga'),
       image: {
         fullsize: {
-          webp: motsar2[0],
-          avif: motsar2[1],
+          webp: part2[0],
+          avif: part2[1],
         },
-        preview: motsar2[2],
+        preview: part2[2],
+      }
+    },
+    {
+      title: String('Title about manga'),
+      image: {
+        fullsize: {
+          webp: part3[0],
+          avif: part3[1],
+        },
+        preview: part3[2],
+      }
+    },
+    {
+      title: String('Title about manga'),
+      image: {
+        fullsize: {
+          webp: part4[0],
+          avif: part4[1],
+        },
+        preview: part4[2],
+      }
+    },
+    {
+      title: String('Title about manga'),
+      image: {
+        fullsize: {
+          webp: part5[0],
+          avif: part5[1],
+        },
+        preview: part5[2],
       }
     },
   ]
 
-  private TABS: Array<TAB> = ['BOB', 'GOB', 'LAB', 'DAB'];
+  private TABS: Array<TAB> = ['BOB', 'GOB', 'LAB'];
 
   constructor(payload: ComponentPayload<State, Props>) { 
 
@@ -83,10 +119,10 @@ export default class AboutBlock extends EccheumaComponent<State,Props,Components
     }))
 
     this.TABS.forEach(name => {
-      this.registerComponent(`Button-${ name }`, Button, { 
+      const button = this.registerComponent(`Button-${ name }`, Button, { 
         title: name,
         onClick() {
-          console.log(name);
+          button!.state.setKey('title', Math.random().toString(36).slice(-8).toUpperCase())
         }
       })
     })
@@ -126,7 +162,12 @@ export default class AboutBlock extends EccheumaComponent<State,Props,Components
 
     return html`
       <section class="about-container" id="${ this.elementID }">
-        <h1>ABOUT THIS LANDING</h1>
+        <header>
+          <h1>CHAPTERS</h1>
+          <p>
+            Lorem ipsum qui ea fugiat aliquip sit sit dolor in enim minim voluptate reprehenderit sunt veniam deserunt amet adipisicing fugiat esse ullamco ad tempor laboris sunt aute culpa.
+          <p>          
+        </header>
         <hr>
         <div class="about-tabs">
           ${ TABS }

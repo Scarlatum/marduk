@@ -26,7 +26,7 @@ export default class Header extends Component<State, Props, any> {
 
   private static NAVIGATION_LINKS: Array<HeaderLink> = [
     { link: './', title: 'Home' },
-    { link: './', title: 'Service' },
+    { link: './', title: 'Chapters' },
     { link: './', title: 'Prices' },
     { link: './', title: 'Abouts Us' },
   ];
@@ -64,7 +64,7 @@ export default class Header extends Component<State, Props, any> {
     `)
 
     return html`
-      <nav class="navigation-container" id="${ this.elementID }">
+      <nav class="navigation-container web-pattern" id="${ this.elementID }">
         <span style="--logoPath: url(${ Icon })"></span>
         <div class=navigation-links>
           ${ LinkElements }

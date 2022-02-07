@@ -1,26 +1,39 @@
 .about {
 	&-container {
 
-		padding: 5vh 15vw;
+		padding: 5vh 5vw;
 		display: grid;
 		gap: 2vh 0;
 
-		h1 {
-			color: white;
-			display: block;
-			text-align: center;
+		background: var(--color-base-400);
+
+		header {
+			h1 {
+				color: white;
+				display: block;
+				text-align: center;
+				font-size: 5vh;
+				margin: 2vh;
+			}
+			p {
+				text-align: center;
+				font-size: 2vh;		
+				width: 50%;
+				margin: auto;
+				color: grey;
+			}
 		}
 
 		hr {
 			width: 100%;
-			border-color: var(--color-base-500);
+			border-color: var(--color-base-600);
 		}
 
 	}
 	&-tabs {
 		display: grid;
 		gap: 0 2vw;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(3, 1fr);
 	}
 	&-cards {
 		display: grid;

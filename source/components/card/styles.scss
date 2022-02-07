@@ -1,46 +1,68 @@
 .card {
-  &-container {
+	&-container {
 
-    // --fall-color: var(--color-base-500-50);
+		// --fall-color: var(--color-base-500-50);
 
-    opacity: 0;
+		opacity: 0;
 
-    cursor: pointer;
+		cursor: pointer;
 
-    position: relative;
-    overflow: hidden;
+		position: relative;
+		overflow: hidden;
 
-    height: min-content;
-    background: var(--color-base-500);
-    border: 1px solid var(--color-accent-500);
-    border-radius: .7rem;
-    padding: 2vh 2vw; gap: 2vh;
+		height: min-content;
+		background: var(--color-base-500);
+		border: var(--border-size, 1px) solid var(--color-accent-200);
+		border-radius: .7rem;
+		padding: 2vh 2vw; gap: 2vh;
 
-    display: grid;
-    grid-template-rows: auto minmax(15vh, max-content) 1fr;
-  
+		display: grid;
+		grid-template-rows: auto minmax(15vh, max-content) 1fr;
+	
 
-    header {
-      font-size: 3vh;
-      font-weight: 800;
-    }
+		header {
+			display: grid;
+			gap: .25vh;
+			h3 {
+				font-size: 2.5vh;
+				font-weight: 700;
+				text-align: center;
+				margin: 0;
+			}
+			h4 {
+				font-size: 1.5vh;
+				font-weight: 400;
+				text-align: center;
+				opacity: .25;
+				margin: 0;
+			}
+		}
 
-    hr {
-      width: 100%;
-      opacity: .2;
-      margin: 0;
-    }
+		hr {
+			width: 100%;
+			opacity: .2;
+			margin: 0;
+		}
 
-    img {
-      width: 100%;
-      object-fit: cover;
-      filter: drop-shadow(0px 0px 10px rgba(0,0,0, .25));
-      border-radius: .7rem;
-    }
+		img {
+			width: 100%;
+			object-fit: cover;
+			filter: drop-shadow(0px 0px 10px rgba(0,0,0, .25));
+			border-radius: .7rem;
+			border: var(--border-size) solid var(--color-base-700)
+		}
 
-    p {
-      margin: 0; margin-bottom: 5vh;
-    }
+		p {
+			margin: 0; 
 
-  }
+			margin-bottom: 2vh;
+
+			-webkit-line-clamp: 12;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+
+		}
+
+	}
 }
